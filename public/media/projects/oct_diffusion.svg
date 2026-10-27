@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <radialGradient id="oct_glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2F5BFF" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#070B16" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="800" height="500" fill="#070D1B" />
+  <circle cx="400" cy="250" r="280" fill="url(#oct_glow)" />
+  <path d="M50,180 Q200,160 400,190 T750,170" stroke="#6FA8FF" stroke-width="2.5" fill="none" opacity="0.9" />
+  <path d="M50,220 Q220,200 400,230 T750,210" stroke="#2F5BFF" stroke-width="3" fill="none" opacity="0.8" />
+  <path d="M50,270 Q210,250 400,275 T750,255" stroke="#F5B84B" stroke-width="2" fill="none" opacity="0.7" />
+  <path d="M50,320 Q230,300 400,315 T750,300" stroke="#6FA8FF" stroke-width="1.5" fill="none" opacity="0.5" />
+  <g stroke="rgba(255,255,255,0.15)" stroke-dasharray="4,4">
+    <line x1="150" y1="100" x2="150" y2="400" />
+    <line x1="300" y1="100" x2="300" y2="400" />
+    <line x1="450" y1="100" x2="450" y2="400" />
+    <line x1="600" y1="100" x2="600" y2="400" />
+  </g>
+  <text x="150" y="80" fill="#6FA8FF" font-size="11" text-anchor="middle" font-family="monospace">t = 1000</text>
+  <text x="300" y="80" fill="#6FA8FF" font-size="11" text-anchor="middle" font-family="monospace">t = 600</text>
+  <text x="450" y="80" fill="#F5B84B" font-size="11" text-anchor="middle" font-family="monospace">t = 200</text>
+  <text x="600" y="80" fill="#F5B84B" font-size="11" text-anchor="middle" font-family="monospace">t = 0 (SSIM 0.86)</text>
+  <text x="400" y="440" fill="#94A3B8" font-size="12" text-anchor="middle" font-family="monospace" letter-spacing="3">DDPM NOISE PREDICTION • KERMANY RETINAL OCT</text>
+</svg>

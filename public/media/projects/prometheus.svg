@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <radialGradient id="p_glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#F5B84B" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#070B16" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="p_line" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5B84B" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#2F5BFF" stop-opacity="0.3" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="#0A0F1D" />
+  <circle cx="400" cy="250" r="260" fill="url(#p_glow)" />
+  <g stroke="rgba(255,255,255,0.04)" stroke-width="1">
+    <line x1="100" y1="0" x2="100" y2="500" />
+    <line x1="250" y1="0" x2="250" y2="500" />
+    <line x1="400" y1="0" x2="400" y2="500" />
+    <line x1="550" y1="0" x2="550" y2="500" />
+    <line x1="700" y1="0" x2="700" y2="500" />
+    <line x1="0" y1="120" x2="800" y2="120" />
+    <line x1="0" y1="250" x2="800" y2="250" />
+    <line x1="0" y1="380" x2="800" y2="380" />
+  </g>
+  <g stroke="url(#p_line)" stroke-width="2" fill="none">
+    <polygon points="400,100 550,200 490,380 310,380 250,200" />
+    <line x1="400" y1="100" x2="400" y2="300" />
+    <line x1="250" y1="200" x2="400" y2="300" />
+    <line x1="550" y1="200" x2="400" y2="300" />
+    <line x1="310" y1="380" x2="400" y2="300" />
+    <line x1="490" y1="380" x2="400" y2="300" />
+  </g>
+  <circle cx="400" cy="100" r="8" fill="#F5B84B" />
+  <circle cx="550" cy="200" r="6" fill="#6FA8FF" />
+  <circle cx="490" cy="380" r="6" fill="#F5B84B" />
+  <circle cx="310" cy="380" r="6" fill="#2F5BFF" />
+  <circle cx="250" cy="200" r="6" fill="#6FA8FF" />
+  <circle cx="400" cy="300" r="14" fill="#F5B84B" opacity="0.9" />
+  <text x="400" y="305" fill="#070B16" font-size="11" font-weight="bold" text-anchor="middle" font-family="monospace">AI</text>
+  <text x="400" y="445" fill="#94A3B8" font-size="12" text-anchor="middle" font-family="monospace" letter-spacing="3">CLOSED-LOOP ADVERSARIAL DISCRIMINATOR</text>
+</svg>

@@ -1,0 +1,47 @@
+:root {
+  /* Colors */
+  --bg-dark: #070B16;
+  --bg-dark-card: #0D1424;
+  --bg-dark-surface: #121B30;
+  --bg-light: #F3EFE6;
+  --bg-light-surface: #E8E3D8;
+  
+  --text-dark: #070B16;
+  --text-dark-muted: #5A6275;
+  --text-light: #F3EFE6;
+  --text-light-muted: #94A3B8;
+
+  --accent-blue-primary: #2F5BFF;
+  --accent-blue-light: #6FA8FF;
+  --accent-blue-glow: rgba(47, 91, 255, 0.25);
+  --accent-amber: #F5B84B;
+  --accent-amber-glow: rgba(245, 184, 75, 0.3);
+
+  --border-dark: rgba(255, 255, 255, 0.08);
+  --border-dark-hover: rgba(111, 168, 255, 0.3);
+  --border-light: rgba(7, 11, 22, 0.12);
+  
+  /* Fonts */
+  --font-display: 'Bebas Neue', 'Anton', -apple-system, sans-serif;
+  --font-sans: 'Outfit', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-script: 'Caveat', cursive;
+}
+
+/* Base custom classes */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.02em;
+}
+
+.font-sans-custom {
+  font-family: var(--font-sans);
+}
+
+.font-mono-custom {
+  font-family: var(--font-mono);
+}
+
+.font-script-custom {
+  font-family: var(--font-script);
+}

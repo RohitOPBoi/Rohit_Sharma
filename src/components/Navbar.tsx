@@ -1,0 +1,131 @@
+import React, { useState, useEffect } from 'react';
+import { profileData } from '../data/profile';
+
+export const Navbar: React.FC = () => {
+  const [scrolled, setScrolled] = useState<boolean>(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const navLinks = [
+    { name: 'Work', href: '#work' },
+    { name: 'About', href: '#about' },
+    { name: 'Expertise', href: '#expertise' },
+    { name: 'Research', href: '#research' },
+    { name: 'Contact', href: '#contact' },
+  ];
+
+  return (
+    <header
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+        scrolled
+          ? 'bg-[#070B16]/80 backdrop-blur-md border-b border-white/5 py-3.5 shadow-lg'
+          : 'bg-transparent py-5'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+        {/* Left: Script-style signature logo */}
+        <a
+          href="#hero"
+          data-cursor="interactive"
+          className="group flex items-center gap-2 select-none"
+        >
+          <span className="font-script text-3xl md:text-4xl font-bold tracking-wide text-[#F3EFE6] transition-colors group-hover:text-[#6FA8FF]">
+            {profileData.firstName.toLowerCase()}
+          </span>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#F5B84B] shadow-[0_0_8px_#F5B84B]" />
+        </a>
+
+        {/* Center: Desktop Nav Links */}
+        <nav className="hidden md:flex items-center gap-8 text-xs font-mono tracking-widest uppercase">
+          {navLinks.map((link) => (
+            <a
+              key={link.name}
+              href={link.href}
+              data-cursor="interactive"
+              className="text-[#94A3B8] hover:text-[#F3EFE6] transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-[#6FA8FF] hover:after:w-full after:transition-all after:duration-300"
+            >
+              {link.name}
+            </a>
+          ))}
+        </nav>
+
+        {/* Right: Location & Availability Indicator */}
+        <div className="hidden lg:flex items-center gap-4">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[11px] font-mono text-[#94A3B8]">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[#F3EFE6]">BASED IN {profileData.city}</span>
+          </div>
+
+          <a
+            href="#contact"
+            data-cursor="interactive"
+            className="px-4 py-1.5 rounded-full text-xs font-mono font-medium tracking-wider text-[#070B16] bg-[#F5B84B] hover:bg-[#ffc666] transition-all shadow-[0_0_15px_rgba(245,184,75,0.3)] hover:shadow-[0_0_20px_rgba(245,184,75,0.5)]"
+          >
+            LET'S TALK
+          </a>
+        </div>
+
+        {/* Mobile Hamburger Toggle */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          data-cursor="interactive"
+          className="md:hidden flex flex-col justify-center items-center w-9 h-9 space-y-1.5 focus:outline-none"
+          aria-label="Toggle Navigation Menu"
+        >
+          <span
+            className={`block w-6 h-0.5 bg-[#F3EFE6] transition-transform duration-300 ${
+              mobileMenuOpen ? 'rotate-45 translate-y-2' : ''
+            }`}
+          />
+          <span
+            className={`block w-6 h-0.5 bg-[#F3EFE6] transition-opacity duration-300 ${
+              mobileMenuOpen ? 'opacity-0' : 'opacity-100'
+            }`}
+          />
+          <span
+            className={`block w-6 h-0.5 bg-[#F3EFE6] transition-transform duration-300 ${
+              mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''
+            }`}
+          />
+        </button>
+      </div>
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-[#070B16]/95 backdrop-blur-xl border-b border-white/10 px-6 py-6 transition-all">
+          <nav className="flex flex-col space-y-4 text-sm font-mono tracking-wider uppercase">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-[#94A3B8] hover:text-[#6FA8FF] py-2 border-b border-white/5"
+              >
+                {link.name}
+              </a>
+            ))}
+            <div className="pt-2 flex flex-col gap-3">
+              <span className="text-xs text-[#94A3B8] font-mono">
+                BASED IN {profileData.city}, {profileData.country}
+              </span>
+              <a
+                href="#contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full text-center py-2.5 rounded-full text-xs font-mono font-medium text-[#070B16] bg-[#F5B84B]"
+              >
+                LET'S TALK
+              </a>
+            </div>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+};

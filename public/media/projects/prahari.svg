@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%" height="100%">
+  <defs>
+    <radialGradient id="pr_glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#2F5BFF" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#070B16" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="800" height="500" fill="#080E1C" />
+  <circle cx="400" cy="250" r="260" fill="url(#pr_glow)" />
+  <polygon points="400,90 560,180 560,330 400,420 240,330 240,180" stroke="#2F5BFF" stroke-width="2.5" fill="none" />
+  <polygon points="400,120 530,195 530,315 400,390 270,315 270,195" stroke="#6FA8FF" stroke-width="1.5" stroke-dasharray="6,6" fill="none" opacity="0.6" />
+  <circle cx="400" cy="250" r="35" fill="#0D152A" stroke="#2F5BFF" stroke-width="2" />
+  <text x="400" y="255" fill="#F3EFE6" font-size="14" font-weight="bold" text-anchor="middle" font-family="monospace">CORE</text>
+  <circle cx="320" cy="190" r="12" fill="#2F5BFF" />
+  <circle cx="480" cy="190" r="12" fill="#6FA8FF" />
+  <circle cx="480" cy="310" r="12" fill="#F5B84B" />
+  <circle cx="320" cy="310" r="12" fill="#10B981" />
+  <text x="400" y="455" fill="#94A3B8" font-size="12" text-anchor="middle" font-family="monospace" letter-spacing="3">SOVEREIGN AIR-GAPPED AGENTIC WORKBENCH</text>
+</svg>
