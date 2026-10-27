@@ -28,14 +28,7 @@ body {
   color: var(--text-light);
   font-family: var(--font-sans);
   overflow-x: hidden;
-}
-
-/* Custom cursor default hide on pointer device */
-@media (pointer: fine) {
-  body.has-custom-cursor,
-  body.has-custom-cursor * {
-    cursor: none !important;
-  }
+  cursor: default; /* Normal system cursor everywhere */
 }
 
 /* Lenis smooth scroll recommended CSS */
@@ -81,13 +74,13 @@ html.lenis, html.lenis body {
 .animate-marquee {
   display: flex;
   width: max-content;
-  animation: marquee 28s linear infinite;
+  animation: marquee 32s linear infinite;
 }
 
 .animate-marquee-reverse {
   display: flex;
   width: max-content;
-  animation: marquee-reverse 28s linear infinite;
+  animation: marquee-reverse 32s linear infinite;
 }
 
 .animate-marquee:hover,
@@ -95,18 +88,48 @@ html.lenis, html.lenis body {
   animation-play-state: paused;
 }
 
-/* Circular Rotating Badge */
-@keyframes rotate-badge {
+/* Specular shimmer for text glitter */
+@keyframes glitter-sheen {
   0% {
-    transform: rotate(0deg);
+    background-position: -200% 0;
   }
   100% {
-    transform: rotate(360deg);
+    background-position: 200% 0;
   }
 }
 
-.animate-spin-slow {
-  animation: rotate-badge 16s linear infinite;
+.animate-glitter-sheen {
+  background: linear-gradient(
+    90deg,
+    rgba(243, 239, 230, 0.2) 0%,
+    rgba(245, 184, 75, 0.9) 25%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(111, 168, 255, 0.9) 75%,
+    rgba(243, 239, 230, 0.2) 100%
+  );
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: glitter-sheen 6s var(--ease-smooth) infinite;
+}
+
+/* Micro-interaction link underline draw */
+.link-draw {
+  position: relative;
+}
+.link-draw::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  background-color: var(--accent-blue-light);
+  transition: width var(--duration-normal) var(--ease-smooth);
+}
+.link-draw:hover::after {
+  width: 100%;
 }
 
 /* Reduced motion support */
@@ -121,7 +144,7 @@ html.lenis, html.lenis body {
   }
   .animate-marquee,
   .animate-marquee-reverse,
-  .animate-spin-slow {
+  .animate-glitter-sheen {
     animation: none !important;
   }
 }

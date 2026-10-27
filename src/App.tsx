@@ -4,7 +4,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { Preloader } from './components/Preloader';
-import { Cursor } from './components/Cursor';
 import { Navbar } from './components/Navbar';
 import { Marquee } from './components/Marquee';
 
@@ -62,13 +61,10 @@ export const App: React.FC = () => {
         <Preloader onComplete={() => setPreloaderDone(true)} totalFrames={72} />
       )}
 
-      {/* 2. Fluid Custom Cursor */}
-      <Cursor />
-
-      {/* 3. Navigation Bar */}
+      {/* 2. Navigation Bar */}
       <Navbar />
 
-      {/* 4. Page Sections */}
+      {/* 3. Page Sections */}
       <main className="relative w-full">
         <HeroSection />
 
@@ -100,7 +96,7 @@ export const App: React.FC = () => {
         <ContactSection />
       </main>
 
-      {/* 5. Footer */}
+      {/* 4. Footer */}
       <Footer />
     </div>
   );

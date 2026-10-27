@@ -17,6 +17,7 @@ export const Navbar: React.FC = () => {
     { name: 'Work', href: '#work' },
     { name: 'About', href: '#about' },
     { name: 'Expertise', href: '#expertise' },
+    { name: 'Contributions', href: '#contributions' },
     { name: 'Research', href: '#research' },
     { name: 'Contact', href: '#contact' },
   ];
@@ -25,7 +26,7 @@ export const Navbar: React.FC = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled
-          ? 'bg-[#070B16]/80 backdrop-blur-md border-b border-white/5 py-3.5 shadow-lg'
+          ? 'bg-[#070B16]/85 backdrop-blur-md border-b border-white/10 py-3.5 shadow-lg'
           : 'bg-transparent py-5'
       }`}
     >
@@ -33,7 +34,6 @@ export const Navbar: React.FC = () => {
         {/* Left: Script-style signature logo */}
         <a
           href="#hero"
-          data-cursor="interactive"
           className="group flex items-center gap-2 select-none"
         >
           <span className="font-script text-3xl md:text-4xl font-bold tracking-wide text-[#F3EFE6] transition-colors group-hover:text-[#6FA8FF]">
@@ -48,8 +48,7 @@ export const Navbar: React.FC = () => {
             <a
               key={link.name}
               href={link.href}
-              data-cursor="interactive"
-              className="text-[#94A3B8] hover:text-[#F3EFE6] transition-colors relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-[#6FA8FF] hover:after:w-full after:transition-all after:duration-300"
+              className="text-[#94A3B8] hover:text-[#F3EFE6] transition-colors link-draw py-1"
             >
               {link.name}
             </a>
@@ -65,8 +64,7 @@ export const Navbar: React.FC = () => {
 
           <a
             href="#contact"
-            data-cursor="interactive"
-            className="px-4 py-1.5 rounded-full text-xs font-mono font-medium tracking-wider text-[#070B16] bg-[#F5B84B] hover:bg-[#ffc666] transition-all shadow-[0_0_15px_rgba(245,184,75,0.3)] hover:shadow-[0_0_20px_rgba(245,184,75,0.5)]"
+            className="px-4 py-1.5 rounded-full text-xs font-mono font-medium tracking-wider text-[#070B16] bg-[#F5B84B] hover:bg-[#ffc666] transition-all shadow-[0_0_15px_rgba(245,184,75,0.3)] hover:shadow-[0_0_20px_rgba(245,184,75,0.5)] cursor-pointer"
           >
             LET'S TALK
           </a>
@@ -75,8 +73,7 @@ export const Navbar: React.FC = () => {
         {/* Mobile Hamburger Toggle */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          data-cursor="interactive"
-          className="md:hidden flex flex-col justify-center items-center w-9 h-9 space-y-1.5 focus:outline-none"
+          className="md:hidden flex flex-col justify-center items-center w-9 h-9 space-y-1.5 focus:outline-none cursor-pointer"
           aria-label="Toggle Navigation Menu"
         >
           <span
@@ -99,7 +96,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#070B16]/95 backdrop-blur-xl border-b border-white/10 px-6 py-6 transition-all">
+        <div className="md:hidden bg-[#070B16]/98 backdrop-blur-xl border-b border-white/10 px-6 py-6 transition-all">
           <nav className="flex flex-col space-y-4 text-sm font-mono tracking-wider uppercase">
             {navLinks.map((link) => (
               <a

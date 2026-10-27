@@ -15,208 +15,224 @@ export const AvatarCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  // Cached frame images
-  const framesRef = useRef<HTMLImageElement[]>([]);
+  // Bitmaps or cached images
+  const bitmapsRef = useRef<(ImageBitmap | HTMLImageElement)[]>([]);
   const manifestRef = useRef<ManifestData>({
     totalFrames: 72,
     width: 1280,
     height: 720,
-    neutralFrameIndex: 71, // Frame 71 is center/neutral
-    leftmostFrameIndex: 0,  // Frame 0 is leftmost turn
+    neutralFrameIndex: 71, // Center / neutral
+    leftmostFrameIndex: 0,
     rightmostFrameIndex: 71,
     hasRightClip: false,
     namingPattern: '/frames/frame_%03d.webp',
   });
 
-  // Tracking state
   const targetFrameRef = useRef<number>(71);
   const currentFrameRef = useRef<number>(71);
   const isIdleRef = useRef<boolean>(true);
   const lastMouseMoveTimeRef = useRef<number>(Date.now());
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const isVisibleRef = useRef<boolean>(true);
+  const [posterLoaded, setPosterLoaded] = useState<boolean>(false);
 
-  // 1. Load manifest and preload frames
+  // 1. Instant poster frame load to eliminate blank flash
+  useEffect(() => {
+    const poster = new Image();
+    poster.src = '/frames/frame_071.webp';
+    poster.onload = () => {
+      setPosterLoaded(true);
+      drawFrame(71);
+    };
+  }, []);
+
+  // 2. Preload frame sequence with createImageBitmap where supported
   useEffect(() => {
     let isCancelled = false;
 
-    const loadAssets = async () => {
+    const loadFrames = async () => {
       try {
         const res = await fetch('/frames/manifest.json');
         if (res.ok) {
-          const data = (await res.json()) as ManifestData;
-          manifestRef.current = data;
-          targetFrameRef.current = data.neutralFrameIndex;
-          currentFrameRef.current = data.neutralFrameIndex;
+          manifestRef.current = (await res.json()) as ManifestData;
         }
       } catch {
-        // Fallback to 72 frames default
+        // Fallback to default manifest
       }
 
       const total = manifestRef.current.totalFrames;
-      const loadedImages: HTMLImageElement[] = [];
-      let loadCounter = 0;
+      const loaded: (ImageBitmap | HTMLImageElement)[] = [];
 
       for (let i = 0; i < total; i++) {
-        const img = new Image();
+        if (isCancelled) break;
         const pad = String(i).padStart(3, '0');
-        img.src = `/frames/frame_${pad}.webp`;
+        const url = `/frames/frame_${pad}.webp`;
 
-        img.onload = () => {
-          loadCounter++;
-          if (loadCounter >= total && !isCancelled) {
-            setIsLoaded(true);
+        try {
+          if ('createImageBitmap' in window) {
+            const resp = await fetch(url);
+            const blob = await resp.blob();
+            const bitmap = await createImageBitmap(blob);
+            loaded[i] = bitmap;
+          } else {
+            const img = new Image();
+            img.src = url;
+            await new Promise((r) => {
+              img.onload = r;
+              img.onerror = r;
+            });
+            loaded[i] = img;
           }
-        };
-        img.onerror = () => {
-          loadCounter++;
-          if (loadCounter >= total && !isCancelled) {
-            setIsLoaded(true);
-          }
-        };
-
-        loadedImages.push(img);
+        } catch {
+          // Continue if single frame fails
+        }
       }
 
-      framesRef.current = loadedImages;
+      if (!isCancelled) {
+        bitmapsRef.current = loaded;
+      }
     };
 
-    loadAssets();
+    loadFrames();
 
     return () => {
       isCancelled = true;
     };
   }, []);
 
-  // 2. Cursor and motion listener
+  // 3. Pause rendering when off-screen or tab hidden
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      isVisibleRef.current = !document.hidden;
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          isVisibleRef.current = entry.isIntersecting && !document.hidden;
+        });
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(container);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      observer.disconnect();
+    };
+  }, []);
+
+  // 4. Cursor position tracking with critical-damped mapping
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       lastMouseMoveTimeRef.current = Date.now();
       isIdleRef.current = false;
 
-      // Map cursor X across viewport width [0.0 ... 1.0]
+      // Cursor X normalized across viewport [0..1]
       const normX = Math.max(0, Math.min(1, e.clientX / window.innerWidth));
+      const total = manifestRef.current.totalFrames;
 
       /**
-       * Frame Mapping Logic:
-       * - When only the left-to-center clip exists (hasRightClip = false):
-       *   NormX = 0.0 (far left) maps to leftmostFrameIndex (0).
-       *   NormX = 1.0 (far right) maps to neutralFrameIndex (71, looking straight ahead).
-       * - When avatar_right.mp4 is provided (hasRightClip = true):
-       *   NormX = 0.0 -> leftmostFrameIndex (0)
-       *   NormX = 0.5 -> neutralFrameIndex (48, center)
-       *   NormX = 1.0 -> rightmostFrameIndex (95, full right)
+       * In the current 72-frame sequence:
+       * - Frame 0 is looking leftmost
+       * - Frame 71 is looking center / forward
+       * When avatar_right.mp4 is added, 0 is leftmost, 48 center, 95 rightmost.
        */
-      const total = manifestRef.current.totalFrames;
-      const mappedIndex = normX * (total - 1);
-      targetFrameRef.current = Math.max(0, Math.min(total - 1, mappedIndex));
+      const mapped = normX * (total - 1);
+      targetFrameRef.current = Math.max(0, Math.min(total - 1, mapped));
     };
 
     const handleMouseLeave = () => {
-      // Ease gracefully back to neutral / forward-facing frame when mouse leaves window
       isIdleRef.current = true;
       targetFrameRef.current = manifestRef.current.neutralFrameIndex;
     };
 
-    // Mobile / touch device tilt listener (deviceorientation)
-    const handleDeviceOrientation = (e: DeviceOrientationEvent) => {
-      if (e.gamma !== null) {
-        lastMouseMoveTimeRef.current = Date.now();
-        isIdleRef.current = false;
-        // Gamma is left-to-right tilt in degrees [-45 .. 45]
-        const tiltNorm = Math.max(0, Math.min(1, (e.gamma + 30) / 60));
-        const total = manifestRef.current.totalFrames;
-        targetFrameRef.current = tiltNorm * (total - 1);
-      }
-    };
-
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave);
-    window.addEventListener('deviceorientation', handleDeviceOrientation, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
-      window.removeEventListener('deviceorientation', handleDeviceOrientation);
     };
   }, []);
 
-  // 3. Render loop with lerp easing
-  const drawFrame = useCallback(
-    (frameIndex: number) => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d', { alpha: false });
-      if (!ctx) return;
+  // 5. High-performance canvas drawing with wide-shot framing (No zoom, no tight crop)
+  const drawFrame = useCallback((frameIndex: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: false });
+    if (!ctx) return;
 
-      const total = framesRef.current.length;
-      if (total === 0) return;
+    const total = bitmapsRef.current.length || 72;
+    const idx = Math.max(0, Math.min(total - 1, Math.round(frameIndex)));
+    const frame = bitmapsRef.current[idx];
 
-      const idx = Math.max(0, Math.min(total - 1, Math.round(frameIndex)));
-      const img = framesRef.current[idx];
-      if (!img || !img.complete || img.naturalWidth === 0) return;
+    // If bitmaps not ready, try fallback poster
+    if (!frame) return;
 
-      const cWidth = canvas.width;
-      const cHeight = canvas.height;
-      const imgWidth = img.naturalWidth;
-      const imgHeight = img.naturalHeight;
+    const cW = canvas.width;
+    const cH = canvas.height;
+    const fW = 'naturalWidth' in frame ? frame.naturalWidth : frame.width;
+    const fH = 'naturalHeight' in frame ? frame.naturalHeight : frame.height;
 
-      /**
-       * Object-fit: cover with face anchoring:
-       * 1. Scale slightly (1.05x) and shift slightly down-left
-       *    to crop out the bottom-right sparkle watermark completely.
-       * 2. Anchor around avatar's head and laptop in the sunny park.
-       */
-      const scale = Math.max(cWidth / imgWidth, cHeight / imgHeight) * 1.05;
-      const renderW = imgWidth * scale;
-      const renderH = imgHeight * scale;
+    if (!fW || !fH) return;
 
-      // Face in original 1280x720 frame is centered around X=53%, Y=44%
-      const faceAnchorX = 0.53;
-      const faceAnchorY = 0.44;
+    /**
+     * WIDE-SHOT CINEMATIC FRAMING:
+     * We want to show the full environment (park, trees, buildings, bench)
+     * exactly as in landing-layout.png without aggressive zoom.
+     * We scale with cover-fit and slight 1.02x to 1.03x so the bottom-right
+     * sparkle watermark is cleanly out of bounds.
+     */
+    const scale = Math.max(cW / fW, cH / fH) * 1.025;
+    const renderW = fW * scale;
+    const renderH = fH * scale;
 
-      const offsetX = cWidth * 0.5 - renderW * faceAnchorX;
-      // Slight vertical offset keeping face and table comfortably in view
-      const offsetY = cHeight * 0.45 - renderH * faceAnchorY;
+    // Center framing keeping the environment and avatar balanced
+    const offsetX = (cW - renderW) * 0.5;
+    const offsetY = (cH - renderH) * 0.45;
 
-      ctx.drawImage(img, offsetX, offsetY, renderW, renderH);
-    },
-    []
-  );
+    ctx.drawImage(frame, offsetX, offsetY, renderW, renderH);
+  }, []);
 
+  // 6. rAF render loop with critical-damped easing
   useEffect(() => {
     let animId: number;
 
     const render = () => {
-      const now = Date.now();
+      if (isVisibleRef.current) {
+        const now = Date.now();
 
-      // Check if cursor has been idle for more than 2 seconds or on touch devices
-      if (!isIdleRef.current && now - lastMouseMoveTimeRef.current > 2000) {
-        isIdleRef.current = true;
+        // Idle detection: smoothly return to center / neutral forward gaze
+        if (!isIdleRef.current && now - lastMouseMoveTimeRef.current > 1800) {
+          isIdleRef.current = true;
+        }
+
+        if (isIdleRef.current) {
+          // Return smoothly to neutral forward frame
+          const neutral = manifestRef.current.neutralFrameIndex;
+          targetFrameRef.current = neutral;
+        }
+
+        // Critical-damped lerp easing (0.09 provides fluid glide without jitter or snap)
+        const lerpFactor = 0.09;
+        const diff = targetFrameRef.current - currentFrameRef.current;
+        currentFrameRef.current += diff * lerpFactor;
+
+        drawFrame(currentFrameRef.current);
       }
 
-      // Idle gentle sway behavior: gently eases around the center/neutral position
-      if (isIdleRef.current) {
-        const time = now * 0.001;
-        // Subtle organic breathing sway
-        const sway = 0.5 + 0.35 * Math.sin(time * 0.8);
-        const total = manifestRef.current.totalFrames;
-        targetFrameRef.current = sway * (total - 1);
-      }
-
-      // Smooth motion with lerp (0.10 gives an ultra-responsive yet gliding feel)
-      const lerpSpeed = 0.10;
-      currentFrameRef.current += (targetFrameRef.current - currentFrameRef.current) * lerpSpeed;
-
-      drawFrame(currentFrameRef.current);
       animId = requestAnimationFrame(render);
     };
 
     animId = requestAnimationFrame(render);
-
     return () => cancelAnimationFrame(animId);
   }, [drawFrame]);
 
-  // 4. Responsive canvas resizing with Retina / High-DPI support
+  // 7. Responsive resize handling
   useEffect(() => {
     const handleResize = () => {
       const canvas = canvasRef.current;
@@ -242,22 +258,18 @@ export const AvatarCanvas: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      data-cursor="avatar"
       className="absolute inset-0 w-full h-full overflow-hidden select-none bg-[#070B16]"
     >
       <canvas
         ref={canvasRef}
-        className={`w-full h-full block object-cover transition-opacity duration-1000 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
+        className={`w-full h-full block object-cover transition-opacity duration-700 ${
+          posterLoaded ? 'opacity-100' : 'opacity-0'
         }`}
       />
 
-      {/* Subtle cinematic gradient vignette for text readability */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#070B16] via-transparent to-[#070B16]/30" />
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-[#070B16]/40 via-transparent to-[#070B16]/40" />
-
-      {/* Watermark security crop mask (bottom-right subtle radial shadow) */}
-      <div className="absolute bottom-0 right-0 w-48 h-32 pointer-events-none bg-gradient-to-tl from-[#070B16] to-transparent opacity-80" />
+      {/* Subtle ambient lighting vignette framing the scene */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#070B16] via-transparent to-[#070B16]/20" />
+      <div className="absolute bottom-0 right-0 w-44 h-28 pointer-events-none bg-gradient-to-tl from-[#070B16] to-transparent opacity-90" />
     </div>
   );
 };

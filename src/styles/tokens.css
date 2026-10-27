@@ -26,6 +26,14 @@
   --font-sans: 'Outfit', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-script: 'Caveat', cursive;
+
+  /* Motion tokens: 3 named eases and 3 durations */
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-out-circ: cubic-bezier(0.85, 0, 0.15, 1);
+  --duration-fast: 200ms;
+  --duration-normal: 450ms;
+  --duration-slow: 850ms;
 }
 
 /* Base custom classes */
