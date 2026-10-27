@@ -1,6 +1,6 @@
 import React from 'react';
 import { HairlineRule } from '../components/HairlineRule';
-import { GithubContribution3D } from '../components/GithubContribution3D';
+import { GithubStoryChart } from '../components/GithubStoryChart';
 import contributionsData from '../data/github-contributions.json';
 import { GitCommit, Fire, GitFork, ArrowUpRight } from '@phosphor-icons/react';
 
@@ -12,7 +12,7 @@ export const GithubSection: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Hairline Rule */}
-        <HairlineRule label="04 / SOURCE TELEMETRY &amp; 3D CODE DISPATCH" theme="dark" className="mb-14" />
+        <HairlineRule label="04 / SOURCE TELEMETRY & CHRONOLOGICAL CADENCE" theme="dark" className="mb-14" />
 
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -60,8 +60,8 @@ export const GithubSection: React.FC = () => {
           </div>
         </div>
 
-        {/* 3D Isometric Three.js Canvas Stage */}
-        <GithubContribution3D />
+        {/* Story Chart Canvas Stage (Matching Recording 2026-10-27 170600.mp4) */}
+        <GithubStoryChart />
 
         {/* Section Footer */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-[#94A3B8] gap-4">
