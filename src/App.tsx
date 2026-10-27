@@ -10,7 +10,7 @@ import { Marquee } from './components/Marquee';
 import { HeroSection } from './sections/HeroSection';
 import { AboutSection } from './sections/AboutSection';
 import { ExpertiseSection } from './sections/ExpertiseSection';
-import { WorkSection } from './sections/WorkSection';
+import { HorizontalWorkSection } from './sections/HorizontalWorkSection';
 import { ResearchSection } from './sections/ResearchSection';
 import { ContactSection } from './sections/ContactSection';
 import { Footer } from './sections/Footer';
@@ -89,7 +89,8 @@ export const App: React.FC = () => {
 
         <ExpertiseSection />
 
-        <WorkSection />
+        {/* Horizontal Pinned Work Section */}
+        <HorizontalWorkSection />
 
         <ResearchSection />
 
