@@ -11,6 +11,7 @@ import { HeroSection } from './sections/HeroSection';
 import { AboutSection } from './sections/AboutSection';
 import { ExpertiseSection } from './sections/ExpertiseSection';
 import { HorizontalWorkSection } from './sections/HorizontalWorkSection';
+import { GithubSection } from './sections/GithubSection';
 import { ResearchSection } from './sections/ResearchSection';
 import { ContactSection } from './sections/ContactSection';
 import { Footer } from './sections/Footer';
@@ -91,6 +92,9 @@ export const App: React.FC = () => {
 
         {/* Horizontal Pinned Work Section */}
         <HorizontalWorkSection />
+
+        {/* 3D Isometric Contribution Graph */}
+        <GithubSection />
 
         <ResearchSection />
 
