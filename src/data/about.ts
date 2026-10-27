@@ -1,56 +1,49 @@
-export interface FactItem {
+export interface VerifiedFact {
   label: string;
   value: string;
-  subValue?: string;
+  detail: string;
 }
 
 export interface AboutData {
   eyebrow: string;
   headline: string;
-  leadParagraph: string;
-  secondaryParagraph: string;
-  portraitPlaceholder: string;
-  quickFacts: FactItem[];
+  summary: string[];
+  facts: VerifiedFact[];
 }
 
 export const aboutData: AboutData = {
-  eyebrow: "01 / WHO AM I",
-  headline: "I ENGINEER INTELLIGENT SYSTEMS WHERE RIGOROUS DEEP LEARNING MEETS PRACTICAL DEPLOYMENT.",
-  leadParagraph:
-    "I am an AI & Machine Learning engineer and B.Tech undergraduate at Vivekananda Institute of Professional Studies (VIPS-TC). My work focuses on mathematical formulations of generative diffusion models and orchestrating multi-agent systems that solve complex, multi-step real-world problems.",
-  secondaryParagraph:
-    "From synthesizing anatomically faithful retinal OCT pathology with time-conditioned U-Net diffusions to designing closed-loop adversarial payment fraud defense mechanisms, I combine first-principles computer science with modern AI research pipelines.",
-  portraitPlaceholder: "/media/portrait_placeholder.webp",
-  quickFacts: [
+  eyebrow: "01 / FOUNDATIONS",
+  headline: "THEORY GROUNDED IN EMPIRICAL DEPLOYMENT",
+  summary: [
+    "Undergraduate researcher and engineer specializing in Denoising Diffusion Probabilistic Models (DDPMs) and hierarchical multi-agent orchestrations at Vivekananda Institute of Professional Studies (VIPS-TC).",
+    "Current work centers on forward/reverse stochastic diffusion equations, time-conditioned U-Nets with Group Normalization and temporal embeddings, and robust quantitative evaluation using SSIM, PSNR, and FID metrics across clinical imaging baselines.",
+    "Beyond generative vision, I build autonomous multi-agent task graphs featuring dynamic decomposition, grounded vector RAG memory, and self-correcting validation loops that maintain auditability in production environments.",
+  ],
+  facts: [
     {
-      label: "BASED IN",
-      value: "GURUGRAM & NEW DELHI",
-      subValue: "INDIA",
+      label: "DEGREE PROGRAM",
+      value: "B.Tech in Artificial Intelligence & Machine Learning",
+      detail: "Vivekananda Institute of Professional Studies (VIPS-TC), New Delhi (2024 — 2028)",
     },
     {
-      label: "CORE FOCUS",
-      value: "DIFFUSION & AGENTIC AI",
-      subValue: "DDPMs • RAG • PyTorch",
+      label: "PEER-REVIEWED RESEARCH",
+      value: "Retinal OCT Image Synthesis via DDPMs",
+      detail: "Accepted at ICSTESD-2026. Achieved FID 13.20 & SSIM 0.86 across 4 retinal conditions.",
     },
     {
-      label: "EDUCATION",
-      value: "B.TECH IN AI & ML",
-      subValue: "VIPS-TC (2024 — 2028)",
+      label: "HACKATHONS & RECOGNITION",
+      value: "2nd Place — HACK GEEK ROOM Hackathon",
+      detail: "Top 5,000 / 50,000+ globally in EY Hackathon 6.0 Global FinTech Challenge.",
     },
     {
-      label: "LEADERSHIP",
-      value: "TREASURER & EVENT MGR",
-      subValue: "AARVAK & ADVAIT VSET",
+      label: "DEPARTMENTAL LEADERSHIP",
+      value: "Treasurer @ AARVAK & Event Manager @ ADVAIT",
+      detail: "Managing financial allocation and operational logistics for technical symposiums.",
     },
     {
-      label: "RESEARCH RIGOR",
-      value: "FID 13.20 | SSIM 0.86",
-      subValue: "Peer-reviewed Paper 2026",
-    },
-    {
-      label: "AVAILABILITY",
-      value: "OPEN FOR INTERNSHIPS",
-      subValue: "Research & Systems",
+      label: "LOCATION & BASE",
+      value: "Gurugram & New Delhi, India",
+      detail: "UTC+5:30 (IST). Available for high-impact AI research and engineering roles.",
     },
   ],
 };
