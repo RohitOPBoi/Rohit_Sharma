@@ -1,9 +1,17 @@
-import React, { useState } from 'react';
-import { HairlineRule } from '../components/HairlineRule';
+import React, { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Envelope, LinkedinLogo, GithubLogo, ArrowUpRight, CheckCircle } from '@phosphor-icons/react';
 import { profileData } from '../data/profile';
-import { Envelope, LinkedinLogo, MapPin, PaperPlaneTilt, CheckCircle, GithubLogo } from '@phosphor-icons/react';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const ContactSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const headlineLinesRef = useRef<(HTMLSpanElement | null)[]>([]);
+  const ghostWordRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -11,6 +19,83 @@ export const ContactSection: React.FC = () => {
   });
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      // 1. Ghost Word "CONTACT" and gold radial glow fade-in (Scene 11 Spec: opacity 0 to 0.12, 1.2s)
+      if (ghostWordRef.current) {
+        gsap.fromTo(
+          ghostWordRef.current,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 0.1,
+            y: 0,
+            duration: 1.2,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+
+      // 2. Headline 3-line sequential light-up (0.25s apart, #3A3A3A to full color)
+      headlineLinesRef.current.forEach((lineEl, idx) => {
+        if (!lineEl) return;
+        const targetColor = idx === 1 ? '#C9B17C' : '#F1E8E0';
+
+        gsap.fromTo(
+          lineEl,
+          { color: '#3A3A3A', opacity: 0.3 },
+          {
+            color: targetColor,
+            opacity: 1,
+            duration: 0.6,
+            delay: idx * 0.25,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: section,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      });
+
+      // 3. Staggered fade up of contact rows and form fields (80ms stagger)
+      if (contentRef.current) {
+        gsap.fromTo(
+          contentRef.current.querySelectorAll('.stagger-item'),
+          { opacity: 0, y: 16 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            stagger: 0.08,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: contentRef.current,
+              start: 'top 75%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,205 +111,225 @@ export const ContactSection: React.FC = () => {
   return (
     <section
       id="contact"
-      className="relative w-full py-24 md:py-36 bg-[#070B16] text-[#F3EFE6] select-none border-t border-white/[0.06] overflow-hidden"
+      ref={sectionRef}
+      className="relative w-full min-h-screen bg-[#0A0A0A] text-[#F1E8E0] py-28 md:py-36 px-6 sm:px-12 md:px-16 lg:px-24 select-none overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
-        {/* Hairline Rule */}
-        <HairlineRule label="05 / GET IN TOUCH" theme="dark" className="mb-16" />
+      {/* Warm Gold Radial Glow along the Top Edge (Scene 11 Spec) */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-64 bg-[#C9B17C]/10 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          {/* Left Column: Big Headline & Info Cards */}
+      {/* Giant Faint Ghost Word "CONTACT" (Scene 11 Spec: only contact has ghost word) */}
+      <div
+        ref={ghostWordRef}
+        className="absolute top-12 left-1/2 -translate-x-1/2 font-display text-[19vw] leading-none text-white tracking-tighter pointer-events-none select-none z-0 opacity-10 whitespace-nowrap"
+      >
+        CONTACT
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto">
+        {/* Eyebrow Header */}
+        <div className="mb-14 flex items-center justify-between border-b border-white/10 pb-4">
+          <span className="text-[11px] font-mono tracking-[0.25em] text-[#C9B17C] uppercase font-semibold">
+            06 — INITIATE CONTACT
+          </span>
+          <span className="text-[10px] font-mono tracking-widest text-[#9A9A9A] uppercase hidden sm:inline-block">
+            DIRECT INQUIRY CHANNEL
+          </span>
+        </div>
+
+        <div
+          ref={contentRef}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start"
+        >
+          {/* Left Column: 3-Line Headline & 3 Contact Rows */}
           <div className="lg:col-span-6 flex flex-col space-y-8">
             <div>
-              <div className="flex items-center gap-3 text-xs font-mono tracking-widest text-[#F5B84B] uppercase font-semibold mb-4">
-                <span className="w-6 h-[1px] bg-[#F5B84B]" />
-                <span>START A CONVERSATION</span>
-              </div>
-
-              {/* Big Headline */}
-              <h2 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tight uppercase text-[#F3EFE6] font-extrabold">
-                LET'S CREATE <br />
-                <span className="text-[#F5B84B]">SOMETHING</span> <br />
-                <span className="text-[#6FA8FF]">MEANINGFUL.</span>
+              {/* 3-Line Headline (Scene 11: "Let's create something meaningful.", center line gold) */}
+              <h2 className="font-sans font-medium text-4xl sm:text-5xl md:text-6xl tracking-tight leading-[1.05]">
+                <span
+                  ref={(el) => {
+                    headlineLinesRef.current[0] = el;
+                  }}
+                  className="block"
+                >
+                  Let's create
+                </span>
+                <span
+                  ref={(el) => {
+                    headlineLinesRef.current[1] = el;
+                  }}
+                  className="block text-[#C9B17C]"
+                >
+                  something
+                </span>
+                <span
+                  ref={(el) => {
+                    headlineLinesRef.current[2] = el;
+                  }}
+                  className="block"
+                >
+                  meaningful.
+                </span>
               </h2>
 
-              <p className="mt-6 text-sm md:text-base text-[#94A3B8] leading-relaxed font-sans max-w-lg">
-                Have a research project in mind, an engineering role, or want to discuss generative diffusion architectures? I would love to hear from you.
+              {/* One-Line Invitation */}
+              <p className="mt-6 text-sm sm:text-base text-[#9A9A9A] font-sans leading-relaxed max-w-md">
+                Available for high-impact Generative AI research, diffusion model engineering, and autonomous multi-agent production pipelines.
               </p>
             </div>
 
-            {/* Left Contact Info Cards */}
-            <div className="flex flex-col space-y-4 pt-4">
-              {/* Email Card */}
+            {/* 3 Contact Rows (Email, LinkedIn, GitHub): 2px lift and border brighten on hover */}
+            <div className="flex flex-col space-y-3.5 pt-2">
+              {/* 1. Email */}
               <a
                 href={`mailto:${profileData.email}`}
-                data-cursor="interactive"
-                className="group flex items-center justify-between p-5 rounded-2xl bg-[#0D1424] border border-white/10 hover:border-[#6FA8FF] transition-all duration-300 shadow-lg"
+                data-cursor="pointer"
+                className="stagger-item group flex items-center justify-between p-4 rounded-xl bg-[#111111] border border-white/10 hover:border-[#C9B17C]/60 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#2F5BFF]/10 text-[#6FA8FF] flex items-center justify-center shrink-0">
-                    <Envelope size={22} weight="bold" />
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-lg bg-white/5 text-[#C9B17C] flex items-center justify-center">
+                    <Envelope size={20} weight="bold" />
                   </div>
                   <div>
-                    <span className="block text-[10px] font-mono tracking-wider text-[#94A3B8] uppercase">
-                      EMAIL DIRECTLY
+                    <span className="block text-[9px] font-mono tracking-widest text-[#9A9A9A] uppercase">
+                      DIRECT EMAIL
                     </span>
-                    <span className="font-mono text-sm md:text-base text-[#F3EFE6] font-medium group-hover:text-[#6FA8FF] transition-colors">
+                    <span className="font-mono text-xs sm:text-sm text-[#F1E8E0] font-medium group-hover:text-[#C9B17C] transition-colors">
                       {profileData.email}
                     </span>
                   </div>
                 </div>
-                <span className="text-[#94A3B8] group-hover:text-[#6FA8FF] transition-transform duration-300 group-hover:translate-x-1">
-                  ↗
-                </span>
+                <div className="text-[#9A9A9A] group-hover:text-[#C9B17C] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all">
+                  <ArrowUpRight size={16} weight="bold" />
+                </div>
               </a>
 
-              {/* LinkedIn Card */}
+              {/* 2. LinkedIn */}
               <a
                 href={profileData.socials[0].url}
                 target="_blank"
                 rel="noopener noreferrer"
-                data-cursor="interactive"
-                className="group flex items-center justify-between p-5 rounded-2xl bg-[#0D1424] border border-white/10 hover:border-[#2F5BFF] transition-all duration-300 shadow-lg"
+                data-cursor="pointer"
+                className="stagger-item group flex items-center justify-between p-4 rounded-xl bg-[#111111] border border-white/10 hover:border-[#C9B17C]/60 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#2F5BFF]/10 text-[#2F5BFF] flex items-center justify-center shrink-0">
-                    <LinkedinLogo size={22} weight="bold" />
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-lg bg-white/5 text-[#C9B17C] flex items-center justify-center">
+                    <LinkedinLogo size={20} weight="bold" />
                   </div>
                   <div>
-                    <span className="block text-[10px] font-mono tracking-wider text-[#94A3B8] uppercase">
-                      LINKEDIN PROFILE
+                    <span className="block text-[9px] font-mono tracking-widest text-[#9A9A9A] uppercase">
+                      PROFESSIONAL NETWORK
                     </span>
-                    <span className="font-mono text-sm md:text-base text-[#F3EFE6] font-medium group-hover:text-[#2F5BFF] transition-colors">
+                    <span className="font-mono text-xs sm:text-sm text-[#F1E8E0] font-medium group-hover:text-[#C9B17C] transition-colors">
                       {profileData.socials[0].label}
                     </span>
                   </div>
                 </div>
-                <span className="text-[#94A3B8] group-hover:text-[#2F5BFF] transition-transform duration-300 group-hover:translate-x-1">
-                  ↗
-                </span>
+                <div className="text-[#9A9A9A] group-hover:text-[#C9B17C] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all">
+                  <ArrowUpRight size={16} weight="bold" />
+                </div>
               </a>
 
-              {/* Location Card */}
-              <div className="flex items-center justify-between p-5 rounded-2xl bg-[#0D1424]/60 border border-white/[0.06]">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-white/[0.04] text-[#F5B84B] flex items-center justify-center shrink-0">
-                    <MapPin size={22} weight="bold" />
+              {/* 3. GitHub */}
+              <a
+                href={profileData.socials[1].url}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-cursor="pointer"
+                className="stagger-item group flex items-center justify-between p-4 rounded-xl bg-[#111111] border border-white/10 hover:border-[#C9B17C]/60 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer"
+              >
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-lg bg-white/5 text-[#C9B17C] flex items-center justify-center">
+                    <GithubLogo size={20} weight="bold" />
                   </div>
                   <div>
-                    <span className="block text-[10px] font-mono tracking-wider text-[#94A3B8] uppercase">
-                      LOCATION
+                    <span className="block text-[9px] font-mono tracking-widest text-[#9A9A9A] uppercase">
+                      CODE &amp; REPOSITORIES
                     </span>
-                    <span className="font-mono text-sm md:text-base text-[#F3EFE6] font-medium">
-                      {profileData.location}
+                    <span className="font-mono text-xs sm:text-sm text-[#F1E8E0] font-medium group-hover:text-[#C9B17C] transition-colors">
+                      {profileData.socials[1].label}
                     </span>
                   </div>
                 </div>
-                <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  IST (UTC+5:30)
-                </span>
-              </div>
+                <div className="text-[#9A9A9A] group-hover:text-[#C9B17C] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all">
+                  <ArrowUpRight size={16} weight="bold" />
+                </div>
+              </a>
             </div>
           </div>
 
-          {/* Right Column: Interactive Form Card */}
-          <div className="lg:col-span-6 rounded-3xl p-8 md:p-10 bg-[#0D1424]/90 backdrop-blur-xl border border-white/10 shadow-2xl">
-            <h3 className="font-display text-2xl md:text-3xl text-[#F3EFE6] uppercase tracking-wide mb-2">
-              SEND A TRANSMISSION
-            </h3>
-            <p className="text-xs text-[#94A3B8] font-mono mb-8">
-              FILL IN DETAILS BELOW • DIRECT DISPATCH TO INBOX
-            </p>
-
-            {submitted ? (
-              <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
-                <CheckCircle size={54} weight="fill" className="text-emerald-400 animate-bounce" />
-                <h4 className="font-display text-3xl text-[#F3EFE6]">MESSAGE RECEIVED</h4>
-                <p className="text-sm text-[#94A3B8] font-sans max-w-sm">
-                  Thank you! Your message has been routed to Rohit Sharma's inbox. Expect a response shortly.
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
-                {/* Name */}
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-[11px] font-mono tracking-wider uppercase text-[#94A3B8] mb-2"
-                  >
-                    YOUR NAME
-                  </label>
-                  <input
-                    id="name"
-                    type="text"
-                    required
-                    value={formState.name}
-                    onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                    placeholder="e.g. Dr. Alex Vance"
-                    className="w-full px-4 py-3.5 rounded-xl bg-white/[0.04] border border-white/10 text-[#F3EFE6] placeholder-white/30 text-sm font-sans focus:outline-none focus:border-[#6FA8FF] focus:ring-1 focus:ring-[#6FA8FF] transition-all"
-                  />
+          {/* Right Column: Form Card in --ink-card (#111111) with Paper-White Submit Button */}
+          <div className="lg:col-span-6 stagger-item">
+            <div className="p-8 sm:p-10 rounded-[10px] bg-[#111111] border border-white/10 shadow-2xl relative">
+              {submitted ? (
+                <div className="py-16 text-center space-y-4">
+                  <CheckCircle size={48} className="mx-auto text-[#C9B17C]" weight="fill" />
+                  <h3 className="font-sans font-bold text-xl text-[#F1E8E0]">
+                    Message Transmitted
+                  </h3>
+                  <p className="text-sm font-sans text-[#9A9A9A] max-w-xs mx-auto">
+                    Your inquiry has been received. I will reply promptly.
+                  </p>
                 </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Name Field */}
+                  <div className="space-y-2">
+                    <label className="block text-[10px] font-mono tracking-widest text-[#9A9A9A] uppercase">
+                      YOUR NAME
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formState.name}
+                      onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                      placeholder="e.g. Dr. Jordan Hayes"
+                      className="w-full px-4 py-3 rounded-md bg-[#0A0A0A] border border-white/10 text-sm font-sans text-[#F1E8E0] placeholder-[#555] focus:outline-none focus:border-[#C9B17C] transition-colors"
+                    />
+                  </div>
 
-                {/* Email */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-[11px] font-mono tracking-wider uppercase text-[#94A3B8] mb-2"
+                  {/* Email Field */}
+                  <div className="space-y-2">
+                    <label className="block text-[10px] font-mono tracking-widest text-[#9A9A9A] uppercase">
+                      EMAIL ADDRESS
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={formState.email}
+                      onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                      placeholder="e.g. j.hayes@deepmind.com"
+                      className="w-full px-4 py-3 rounded-md bg-[#0A0A0A] border border-white/10 text-sm font-sans text-[#F1E8E0] placeholder-[#555] focus:outline-none focus:border-[#C9B17C] transition-colors"
+                    />
+                  </div>
+
+                  {/* Message Field */}
+                  <div className="space-y-2">
+                    <label className="block text-[10px] font-mono tracking-widest text-[#9A9A9A] uppercase">
+                      COMMUNICATION SPECIFICATION
+                    </label>
+                    <textarea
+                      required
+                      rows={4}
+                      value={formState.message}
+                      onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                      placeholder="Outline research requirements, project parameters, or engineering scope..."
+                      className="w-full px-4 py-3 rounded-md bg-[#0A0A0A] border border-white/10 text-sm font-sans text-[#F1E8E0] placeholder-[#555] focus:outline-none focus:border-[#C9B17C] transition-colors resize-none"
+                    />
+                  </div>
+
+                  {/* Full-width Paper-White Button (--paper #F2F0EC with ink text #0A0A0A) */}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    data-cursor="pointer"
+                    className="w-full py-3.5 px-6 rounded-md bg-[#F2F0EC] hover:bg-[#C9B17C] text-[#0A0A0A] font-sans font-semibold text-xs tracking-wider uppercase transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer shadow-lg disabled:opacity-50"
                   >
-                    EMAIL ADDRESS
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    required
-                    value={formState.email}
-                    onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                    placeholder="alex@domain.com"
-                    className="w-full px-4 py-3.5 rounded-xl bg-white/[0.04] border border-white/10 text-[#F3EFE6] placeholder-white/30 text-sm font-sans focus:outline-none focus:border-[#6FA8FF] focus:ring-1 focus:ring-[#6FA8FF] transition-all"
-                  />
-                </div>
-
-                {/* Message */}
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="block text-[11px] font-mono tracking-wider uppercase text-[#94A3B8] mb-2"
-                  >
-                    MESSAGE / PROJECT INQUIRY
-                  </label>
-                  <textarea
-                    id="message"
-                    rows={4}
-                    required
-                    value={formState.message}
-                    onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                    placeholder="Tell me about your research goals or engineering requirements..."
-                    className="w-full px-4 py-3.5 rounded-xl bg-white/[0.04] border border-white/10 text-[#F3EFE6] placeholder-white/30 text-sm font-sans focus:outline-none focus:border-[#6FA8FF] focus:ring-1 focus:ring-[#6FA8FF] transition-all resize-none"
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  data-cursor="interactive"
-                  className="w-full py-4 rounded-xl text-xs font-mono font-bold tracking-widest uppercase bg-[#F3EFE6] text-[#070B16] hover:bg-[#F5B84B] transition-all duration-300 shadow-xl flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-50"
-                >
-                  {loading ? (
-                    <span>DISPATCHING...</span>
-                  ) : (
-                    <>
-                      <span>TRANSMIT MESSAGE</span>
-                      <PaperPlaneTilt
-                        size={16}
-                        weight="bold"
-                        className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1"
-                      />
-                    </>
-                  )}
-                </button>
-              </form>
-            )}
+                    <span>{loading ? 'Transmitting...' : 'Send Message'}</span>
+                    <ArrowUpRight size={14} weight="bold" />
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </div>

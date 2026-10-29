@@ -1,49 +1,37 @@
-export interface VerifiedFact {
+export interface StatPair {
   label: string;
   value: string;
-  detail: string;
 }
 
 export interface AboutData {
   eyebrow: string;
-  headline: string;
-  summary: string[];
-  facts: VerifiedFact[];
+  headlineWords: { text: string; isGold?: boolean }[];
+  paragraphs: string[];
+  stats: StatPair[];
 }
 
 export const aboutData: AboutData = {
-  eyebrow: "01 / FOUNDATIONS",
-  headline: "THEORY GROUNDED IN EMPIRICAL DEPLOYMENT",
-  summary: [
-    "Undergraduate researcher and engineer specializing in Denoising Diffusion Probabilistic Models (DDPMs) and hierarchical multi-agent orchestrations at Vivekananda Institute of Professional Studies (VIPS-TC).",
-    "Current work centers on forward/reverse stochastic diffusion equations, time-conditioned U-Nets with Group Normalization and temporal embeddings, and robust quantitative evaluation using SSIM, PSNR, and FID metrics across clinical imaging baselines.",
-    "Beyond generative vision, I build autonomous multi-agent task graphs featuring dynamic decomposition, grounded vector RAG memory, and self-correcting validation loops that maintain auditability in production environments.",
+  eyebrow: "02 — ABOUT · ROHIT SHARMA",
+  headlineWords: [
+    { text: "ARCHITECTING" },
+    { text: "ROBUST" },
+    { text: "GENERATIVE", isGold: true },
+    { text: "MODELS" },
+    { text: "&" },
+    { text: "AUTONOMOUS", isGold: true },
+    { text: "MULTI-AGENT" },
+    { text: "SYSTEMS", isGold: true },
   ],
-  facts: [
-    {
-      label: "DEGREE PROGRAM",
-      value: "B.Tech in Artificial Intelligence & Machine Learning",
-      detail: "Vivekananda Institute of Professional Studies (VIPS-TC), New Delhi (2024 — 2028)",
-    },
-    {
-      label: "PEER-REVIEWED RESEARCH",
-      value: "Retinal OCT Image Synthesis via DDPMs",
-      detail: "Accepted at ICSTESD-2026. Achieved FID 13.20 & SSIM 0.86 across 4 retinal conditions.",
-    },
-    {
-      label: "HACKATHONS & RECOGNITION",
-      value: "2nd Place — HACK GEEK ROOM Hackathon",
-      detail: "Top 5,000 / 50,000+ globally in EY Hackathon 6.0 Global FinTech Challenge.",
-    },
-    {
-      label: "DEPARTMENTAL LEADERSHIP",
-      value: "Treasurer @ AARVAK & Event Manager @ ADVAIT",
-      detail: "Managing financial allocation and operational logistics for technical symposiums.",
-    },
-    {
-      label: "LOCATION & BASE",
-      value: "Gurugram & New Delhi, India",
-      detail: "UTC+5:30 (IST). Available for high-impact AI research and engineering roles.",
-    },
+  paragraphs: [
+    "Undergraduate AI & ML engineer (CGPA: 9.4) and Machine Learning Intern at CDAC Noida, researching probabilistic diffusion models for clinical retinal OCT synthesis achieving SSIM 0.88 and FID 14.2 across complex diagnostic conditions.",
+    "National hackathon victor including 3rd Place at Qualcomm Delhi National Hackathon with Quorum multimodal orchestration. Tech Lead at HackerRank Campus Crew and Secretary at AARVAK, dedicated to deterministic deep learning pipelines and production CUDA infrastructure.",
+  ],
+  stats: [
+    { label: "CGPA", value: "9.4 CUMULATIVE" },
+    { label: "RESEARCH", value: "DIFFUSION OCT" },
+    { label: "HACKATHON", value: "QUALCOMM 3RD" },
+    { label: "SYSTEMS", value: "MULTI-AGENT" },
+    { label: "TECH LEAD", value: "CAMPUS CREW" },
+    { label: "STACK", value: "PYTORCH & CUDA" },
   ],
 };

@@ -3,15 +3,14 @@ import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+import { CustomCursor } from './components/CustomCursor';
 import { Preloader } from './components/Preloader';
 import { Navbar } from './components/Navbar';
-import { Marquee } from './components/Marquee';
 
 import { HeroSection } from './sections/HeroSection';
 import { AboutSection } from './sections/AboutSection';
-import { ExpertiseSection } from './sections/ExpertiseSection';
-import { HorizontalWorkSection } from './sections/HorizontalWorkSection';
-import { GithubSection } from './sections/GithubSection';
+import { PinnedWorkSection } from './sections/PinnedWorkSection';
+import { ProjectStackSection } from './sections/ProjectStackSection';
 import { ResearchSection } from './sections/ResearchSection';
 import { ContactSection } from './sections/ContactSection';
 import { Footer } from './sections/Footer';
@@ -23,7 +22,6 @@ export const App: React.FC = () => {
 
   // Initialize Lenis smooth scroll and synchronize with GSAP ScrollTrigger
   useEffect(() => {
-    // Check prefers-reduced-motion
     const prefersReducedMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)'
     ).matches;
@@ -56,52 +54,40 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-[#070B16] text-[#F3EFE6]">
-      {/* 1. Preloader */}
+    <div className="relative min-h-screen bg-[#0A0A0A] text-[#F1E8E0] selection:bg-[#C9B17C]/30 selection:text-[#F1E8E0]">
+      {/* Global Trailing Blob Cursor with Difference Blending (PDF Global System 1) */}
+      <CustomCursor />
+
+      {/* Preloader: Scene 1 Counter -> Scene 2 Hello -> Scene 3 Stepped Pixel Disc */}
       {!preloaderDone && (
         <Preloader onComplete={() => setPreloaderDone(true)} totalFrames={144} />
       )}
 
-      {/* 2. Navigation Bar */}
+      {/* Navigation Bar with Script Wordmark & Menu Curtain (Scenes 4 & 5) */}
       <Navbar />
 
-      {/* 3. Page Sections */}
+      {/* Main Page Flow (Scenes 4 -> 6 -> 7 -> 8 -> 9 -> 11) */}
       <main className="relative w-full">
+        {/* Scene 4: Protected 3D Avatar Video Hero with 144 WebP frames & gaze scrubbing */}
         <HeroSection />
 
-        {/* Transition Marquee 1 */}
-        <Marquee theme="dark" />
-
+        {/* Scene 6: Inset Sheet About Section with Elastic String & Word Brighten */}
         <AboutSection />
 
-        {/* Transition Marquee 2 */}
-        <Marquee
-          theme="dark"
-          reverse={true}
-          items={[
-            'PYTORCH PIPELINES',
-            'ADVERSARIAL NEURAL NETWORKS',
-            'TIME-CONDITIONED U-NET',
-            'PROBABILISTIC DIFFUSION',
-            'AUTONOMOUS AGENT GRAPHS',
-            'DOCKER REPRODUCIBILITY',
-          ]}
-        />
+        {/* Scenes 7 & 8: Horizontal Pinned Track: Expertise & Work Title with Dripping WORK */}
+        <PinnedWorkSection />
 
-        <ExpertiseSection />
+        {/* Scene 9: Sticky Project Card Stack with Bright-to-Dim Settle */}
+        <ProjectStackSection />
 
-        {/* Horizontal Pinned Work Section */}
-        <HorizontalWorkSection />
-
-        {/* 3D Isometric Contribution Graph */}
-        <GithubSection />
-
+        {/* Peer-Reviewed Research & Hackathon Accolades */}
         <ResearchSection />
 
+        {/* Scene 11: Contact Section with Ghost Word, Glow & Form */}
         <ContactSection />
       </main>
 
-      {/* 4. Footer */}
+      {/* Minimal Footer */}
       <Footer />
     </div>
   );

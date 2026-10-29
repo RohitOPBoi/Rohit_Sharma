@@ -1,6 +1,6 @@
 import React from 'react';
-import { profileData } from '../data/profile';
 import { ArrowUp } from '@phosphor-icons/react';
+import { profileData } from '../data/profile';
 
 export const Footer: React.FC = () => {
   const scrollToTop = () => {
@@ -8,15 +8,15 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative w-full bg-[#070B16] text-[#F3EFE6] select-none pt-16 pb-12 border-t border-white/[0.08] overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-col justify-between">
+    <footer className="relative w-full bg-[#0A0A0A] text-[#F1E8E0] select-none pt-16 pb-12 border-t border-white/10 overflow-hidden">
+      <div className="max-w-6xl mx-auto px-6 sm:px-10 md:px-14 flex flex-col justify-between">
         {/* Top Info Bar */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-12 border-b border-white/[0.06]">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-10 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <span className="font-script text-4xl text-[#F3EFE6]">{profileData.firstName.toLowerCase()}</span>
-            <span className="w-2 h-2 rounded-full bg-[#F5B84B]" />
-            <span className="text-xs font-mono text-[#94A3B8]">
-              {profileData.headlineRole}
+            <span className="font-script text-3xl text-[#C9B17C]">rohit</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#C9B17C]" />
+            <span className="text-xs font-mono text-[#9A9A9A] tracking-wider uppercase">
+              AI &amp; ML ENGINEER
             </span>
           </div>
 
@@ -28,46 +28,44 @@ export const Footer: React.FC = () => {
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                data-cursor="interactive"
-                className="text-[#94A3B8] hover:text-[#6FA8FF] transition-colors"
+                data-cursor="pointer"
+                className="text-[#9A9A9A] hover:text-[#C9B17C] transition-colors"
               >
-                {s.name} {s.isPlaceholder && <span className="opacity-40">[P]</span>} ↗
+                {s.name} ↗
               </a>
             ))}
           </div>
 
-          {/* Back to top */}
+          {/* Back to top button */}
           <button
             onClick={scrollToTop}
-            data-cursor="interactive"
-            className="flex items-center gap-2 text-xs font-mono text-[#94A3B8] hover:text-[#F5B84B] transition-colors cursor-pointer"
+            data-cursor="pointer"
+            className="flex items-center gap-2 text-xs font-mono text-[#9A9A9A] hover:text-[#C9B17C] transition-colors cursor-pointer"
             aria-label="Back to top"
           >
             <span>BACK TO TOP</span>
-            <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center">
-              <ArrowUp size={14} />
+            <div className="w-7 h-7 rounded-full border border-white/10 flex items-center justify-center">
+              <ArrowUp size={12} weight="bold" />
             </div>
           </button>
         </div>
 
-        {/* Giant Ultra-Condensed Heavy Display Wordmark */}
-        <div className="py-12 md:py-20 select-none text-center">
-          <h2 className="font-display text-[16vw] leading-[0.8] text-white/[0.05] hover:text-white/[0.12] transition-colors duration-700 tracking-tighter uppercase font-black">
+        {/* Display Wordmark */}
+        <div className="py-12 md:py-16 select-none text-center">
+          <h2 className="font-display text-[15vw] leading-[0.8] text-white/[0.04] tracking-tighter uppercase font-black">
             ROHIT SHARMA
           </h2>
         </div>
 
         {/* Bottom Credits & Metadata */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-mono text-[#94A3B8] pt-6 border-t border-white/[0.04]">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-[#9A9A9A] pt-6 border-t border-white/5">
           <div>
-            © {new Date().getFullYear()} Rohit Sharma. Designed with 60 FPS Lenis + GSAP engine.
+            © {new Date().getFullYear()} Rohit Sharma. All specifications preserved.
           </div>
-          <div className="flex items-center gap-4 text-[10px]">
-            <span>REACT 19</span>
+          <div className="flex items-center gap-3">
+            <span>NEAR-BLACK / CREAM / GOLD PALETTE</span>
             <span>•</span>
-            <span>TAILWIND V4</span>
-            <span>•</span>
-            <span>DIFFUSION &amp; AGENTIC ARCHITECTURES</span>
+            <span>LENIS SMOOTH ENGINE</span>
           </div>
         </div>
       </div>

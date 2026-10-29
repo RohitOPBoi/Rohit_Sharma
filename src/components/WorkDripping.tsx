@@ -27,22 +27,20 @@ export const WorkDripping: React.FC = () => {
     let width = (canvas.width = container.clientWidth);
     let height = (canvas.height = container.clientHeight);
 
-    // Live droplet array (kept under 36 for 60fps)
     const droplets: Droplet[] = [];
-    const maxDroplets = 32;
+    const maxDroplets = 24;
 
-    // Anchor points for letters W, O, R, K
     const getLetterAnchors = () => {
       const centerY = height * 0.62;
       return [
-        { x: width * 0.22, y: centerY },
-        { x: width * 0.28, y: centerY },
-        { x: width * 0.38, y: centerY },
-        { x: width * 0.44, y: centerY },
-        { x: width * 0.54, y: centerY },
-        { x: width * 0.60, y: centerY },
-        { x: width * 0.70, y: centerY },
-        { x: width * 0.76, y: centerY },
+        { x: width * 0.23, y: centerY },
+        { x: width * 0.31, y: centerY },
+        { x: width * 0.42, y: centerY },
+        { x: width * 0.48, y: centerY },
+        { x: width * 0.58, y: centerY },
+        { x: width * 0.65, y: centerY },
+        { x: width * 0.74, y: centerY },
+        { x: width * 0.81, y: centerY },
       ];
     };
 
@@ -51,14 +49,14 @@ export const WorkDripping: React.FC = () => {
     const spawnDroplet = () => {
       if (droplets.length >= maxDroplets) return;
       const anchor = anchors[Math.floor(Math.random() * anchors.length)];
-      const jitterX = (Math.random() - 0.5) * 24;
+      const jitterX = (Math.random() - 0.5) * 20;
 
       droplets.push({
         x: anchor.x + jitterX,
         y: anchor.y,
         vy: 0.2 + Math.random() * 0.3,
-        radius: 4 + Math.random() * 6,
-        maxRadius: 10 + Math.random() * 8,
+        radius: 4 + Math.random() * 5,
+        maxRadius: 9 + Math.random() * 6,
         state: 'forming',
         anchorY: anchor.y,
         splashRadius: 0,
@@ -66,8 +64,7 @@ export const WorkDripping: React.FC = () => {
       });
     };
 
-    // Spawn interval
-    const spawnTimer = setInterval(spawnDroplet, 220);
+    const spawnTimer = setInterval(spawnDroplet, 260);
 
     const handleResize = () => {
       if (!canvas || !container) return;
@@ -78,29 +75,28 @@ export const WorkDripping: React.FC = () => {
     window.addEventListener('resize', handleResize);
 
     let animId: number;
-    const gravity = 0.42;
-    const floorY = height * 0.94;
+    const gravity = 0.38;
+    const floorY = height * 0.92;
 
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Droplet amber accent
-      ctx.fillStyle = '#F5B84B';
+      // Gold token #C9B17C
+      ctx.fillStyle = '#C9B17C';
 
       for (let i = droplets.length - 1; i >= 0; i--) {
         const d = droplets[i];
 
         if (d.state === 'forming') {
-          d.radius += 0.12;
-          d.y += 0.18;
+          d.radius += 0.1;
+          d.y += 0.15;
           if (d.radius >= d.maxRadius * 0.8) {
             d.state = 'stretching';
           }
         } else if (d.state === 'stretching') {
           d.y += d.vy;
-          d.vy += 0.15;
-          // Surface tension stretches vertically
-          if (d.y - d.anchorY > 22) {
+          d.vy += 0.12;
+          if (d.y - d.anchorY > 20) {
             d.state = 'falling';
           }
         } else if (d.state === 'falling') {
@@ -113,7 +109,7 @@ export const WorkDripping: React.FC = () => {
             d.splashRadius = d.radius;
           }
         } else if (d.state === 'splash') {
-          d.splashRadius += 1.8;
+          d.splashRadius += 1.6;
           d.splashOpacity -= 0.08;
           if (d.splashOpacity <= 0) {
             droplets.splice(i, 1);
@@ -121,12 +117,10 @@ export const WorkDripping: React.FC = () => {
           }
         }
 
-        // Draw droplet
         if (d.state !== 'splash') {
           ctx.beginPath();
           if (d.state === 'stretching') {
-            // Teardrop elongation
-            const stretch = Math.min(2.5, 1 + d.vy * 0.1);
+            const stretch = Math.min(2.2, 1 + d.vy * 0.1);
             ctx.save();
             ctx.translate(d.x, d.y);
             ctx.scale(1 / stretch, stretch);
@@ -138,10 +132,9 @@ export const WorkDripping: React.FC = () => {
             ctx.fill();
           }
         } else {
-          // Splash ripple
           ctx.save();
-          ctx.strokeStyle = `rgba(245, 184, 75, ${d.splashOpacity})`;
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = `rgba(201, 177, 124, ${d.splashOpacity})`;
+          ctx.lineWidth = 1.5;
           ctx.beginPath();
           ctx.ellipse(d.x, floorY, d.splashRadius, d.splashRadius * 0.35, 0, 0, Math.PI * 2);
           ctx.stroke();
@@ -164,10 +157,10 @@ export const WorkDripping: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[65vh] md:h-[80vh] flex flex-col items-center justify-center select-none overflow-hidden"
+      className="relative w-full h-[55vh] sm:h-[65vh] flex flex-col items-center justify-center select-none overflow-hidden"
     >
-      {/* SVG Gooey Filter Definition */}
-      <svg className="absolute w-0 h-0" aria-hidden="true">
+      {/* SVG Gooey Filter Definition (Scene 8 Spec) */}
+      <svg className="absolute w-0 h-0 pointer-events-none" aria-hidden="true">
         <defs>
           <filter id="dripping-goo">
             <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
@@ -182,10 +175,10 @@ export const WorkDripping: React.FC = () => {
         </defs>
       </svg>
 
-      {/* Giant Dripping WORK Text */}
+      {/* Giant Gold WORK Text with dripping filter */}
       <div
         style={{ filter: 'url(#dripping-goo)' }}
-        className="relative z-10 font-display text-[26vw] leading-none text-[#F5B84B] font-extrabold tracking-tighter text-center select-none"
+        className="relative z-10 font-display text-[25vw] md:text-[23vw] leading-none text-[#C9B17C] font-extrabold tracking-tight text-center select-none"
       >
         WORK
       </div>
@@ -196,12 +189,6 @@ export const WorkDripping: React.FC = () => {
         style={{ filter: 'url(#dripping-goo)' }}
         className="absolute inset-0 z-20 pointer-events-none"
       />
-
-      {/* Monospace Indicator */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 text-xs font-mono tracking-widest text-[#94A3B8] uppercase">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#F5B84B] animate-ping" />
-        <span>PANEL 01 / HORIZONTAL ARCHITECTURE DISPATCH</span>
-      </div>
     </div>
   );
 };

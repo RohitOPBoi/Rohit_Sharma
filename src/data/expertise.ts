@@ -1,87 +1,84 @@
-export interface ExpertiseRow {
-  id: string;
+export interface ServiceRow {
   index: string;
   title: string;
-  category: string;
   description: string;
-  techTags: string[];
-  floatingTokens: {
-    label: string;
+  tags: [string, string, string];
+  link: string;
+}
+
+export interface ExpertiseData {
+  eyebrow: string;
+  headingTop: string;
+  headingBottom: string;
+  introHighlight: string;
+  introBody: string;
+  techChips: string[];
+  rows: ServiceRow[];
+  floatingIcons: {
+    name: string;
     symbol: string;
     color: string;
-    bg: string;
+    x: number; // base percentage x
+    y: number; // base percentage y
+    speed: number;
   }[];
 }
 
-export const expertiseData: ExpertiseRow[] = [
-  {
-    id: "ai-ml-research",
-    index: "01",
-    category: "FOUNDATIONS & ARCHITECTURE",
-    title: "AI & Machine Learning Research",
-    description:
-      "Formulating deep learning architectures in PyTorch with custom loss surfaces, probabilistic noise schedules, mathematical optimization, and rigorous statistical evaluation pipelines.",
-    techTags: ["PyTorch", "Python", "Deep Learning", "Probabilistic Modeling", "Optimization"],
-    floatingTokens: [
-      { label: "PyTorch", symbol: "🔥", color: "#EE4C2C", bg: "rgba(238, 76, 44, 0.15)" },
-      { label: "Python", symbol: "🐍", color: "#3776AB", bg: "rgba(55, 118, 171, 0.15)" },
-      { label: "Math", symbol: "∑", color: "#6FA8FF", bg: "rgba(111, 168, 255, 0.15)" },
-    ],
-  },
-  {
-    id: "diffusion-medical",
-    index: "02",
-    category: "GENERATIVE VISION & SYNTHESIS",
-    title: "Generative Models & Medical Imaging",
-    description:
-      "Denoising Diffusion Probabilistic Models (DDPMs) and time-conditioned U-Nets with Group Normalization and SiLU activations. Benchmarked against GAN baselines (StyleGAN2, CycleGAN) on Kermany OCT.",
-    techTags: ["DDPM", "U-Net", "Medical Imaging", "SSIM / PSNR", "FID Evaluation"],
-    floatingTokens: [
-      { label: "DDPM", symbol: "🌊", color: "#6FA8FF", bg: "rgba(111, 168, 255, 0.15)" },
-      { label: "Vision", symbol: "👁️", color: "#F5B84B", bg: "rgba(245, 184, 75, 0.15)" },
-      { label: "U-Net", symbol: "∪", color: "#2F5BFF", bg: "rgba(47, 91, 255, 0.15)" },
-    ],
-  },
-  {
-    id: "fintech-fraud",
-    index: "03",
-    category: "ADVERSARIAL RISK DEFENSE",
-    title: "Fintech & Fraud / Risk AI",
-    description:
-      "Adversarial intelligence systems designed to counter next-gen synthetic identity fraud and prompt-injected transaction anomalies in high-throughput payment rails.",
-    techTags: ["Adversarial AI", "Fraud Detection", "Risk Intelligence", "GFF Mumbai", "EY Hackathon"],
-    floatingTokens: [
-      { label: "Fintech", symbol: "⚡", color: "#F5B84B", bg: "rgba(245, 184, 75, 0.15)" },
-      { label: "Defense", symbol: "🛡️", color: "#10B981", bg: "rgba(16, 185, 129, 0.15)" },
-      { label: "Audit", symbol: "📊", color: "#6FA8FF", bg: "rgba(111, 168, 255, 0.15)" },
-    ],
-  },
-  {
-    id: "agentic-systems",
-    index: "04",
-    category: "AUTONOMOUS ORCHESTRATION",
-    title: "Agentic AI & Multi-Agent Systems",
-    description:
-      "Building hierarchical multi-agent frameworks with dynamic task graph decomposition, vector RAG memory, self-correction reflection loops, and streaming evidence-graph visualization.",
-    techTags: ["Multi-Agent Graphs", "LLMs", "RAG Pipeline", "Self-Correction", "Vector DB"],
-    floatingTokens: [
-      { label: "Agents", symbol: "🤖", color: "#2F5BFF", bg: "rgba(47, 91, 255, 0.15)" },
-      { label: "Graph", symbol: "🕸️", color: "#8B5CF6", bg: "rgba(139, 92, 246, 0.15)" },
-      { label: "Memory", symbol: "🧠", color: "#EC4899", bg: "rgba(236, 72, 153, 0.15)" },
-    ],
-  },
-  {
-    id: "technical-systems",
-    index: "05",
-    category: "INFRASTRUCTURE & REPRODUCIBILITY",
-    title: "Technical Systems & Research Presentation",
-    description:
-      "Reproducible research pipelines packaged with Docker, Linux systems automation, low-level algorithms in C/C++, and publication-grade academic documentation.",
-    techTags: ["Docker", "Linux", "C++ / DSA", "Signal Processing", "Git Pipelines"],
-    floatingTokens: [
-      { label: "Docker", symbol: "🐳", color: "#2496ED", bg: "rgba(36, 150, 237, 0.15)" },
-      { label: "Linux", symbol: "🐧", color: "#FCC624", bg: "rgba(252, 198, 36, 0.15)" },
-      { label: "C++", symbol: "⚙️", color: "#00599C", bg: "rgba(0, 89, 156, 0.15)" },
-    ],
-  },
-];
+export const expertiseData: ExpertiseData = {
+  eyebrow: "03 — EXPERTISE",
+  headingTop: "MY",
+  headingBottom: "EXPERTISE",
+  introHighlight: "Architecting generative vision and autonomous multi-agent systems",
+  introBody:
+    "Grounded in mathematical formulation, time-conditioned diffusion pipelines, and verifiable production orchestration with zero tolerance for ungrounded hallucination.",
+  techChips: [
+    "PyTorch",
+    "CUDA",
+    "FastMCP",
+    "Docker",
+    "Python",
+    "Transformers",
+    "U-Net",
+  ],
+  rows: [
+    {
+      index: "01",
+      title: "Generative AI & Diffusion Models",
+      description:
+        "Formulating forward and reverse stochastic differential equations, time-conditioned U-Nets, and latent sampling pipelines for high-fidelity clinical synthesis.",
+      tags: ["DDPM / DDIM", "Time-Conditioned U-Net", "Kermany OCT"],
+      link: "#work",
+    },
+    {
+      index: "02",
+      title: "Multi-Agent Systems & MCP",
+      description:
+        "Building autonomous agent topologies with dynamic reflection trees, tool discovery via FastMCP, sub-250ms edge scheduling, and self-correcting validation loops.",
+      tags: ["LangGraph", "FastMCP Protocols", "Edge Scheduling"],
+      link: "#work",
+    },
+    {
+      index: "03",
+      title: "Deep Learning & Computer Vision",
+      description:
+        "Custom neural architectures, self-attention mechanisms, convolutional backbones, and adversarial discriminators optimized for high-throughput GPU inference.",
+      tags: ["Attention Heads", "PyTorch Geometric", "Loss Surfaces"],
+      link: "#work",
+    },
+    {
+      index: "04",
+      title: "Production ML & Infrastructure",
+      description:
+        "Deterministic Docker environments, CUDA kernel execution, Linux server tuning, and reproducible deployment frameworks engineered for enterprise reliability.",
+      tags: ["Docker Containment", "CUDA Acceleration", "API Gateway"],
+      link: "#work",
+    },
+  ],
+  floatingIcons: [
+    { name: "PyTorch", symbol: "🔥", color: "#EE4C2C", x: 65, y: 18, speed: 1.1 },
+    { name: "CUDA", symbol: "⚡", color: "#76B900", x: 85, y: 35, speed: 0.9 },
+    { name: "Python", symbol: "🐍", color: "#3776AB", x: 60, y: 60, speed: 1.3 },
+    { name: "Docker", symbol: "🐳", color: "#2496ED", x: 80, y: 75, speed: 0.8 },
+    { name: "FastMCP", symbol: "⚙️", color: "#C9B17C", x: 92, y: 15, speed: 1.2 },
+  ],
+};

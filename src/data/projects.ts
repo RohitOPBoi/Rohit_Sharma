@@ -1,102 +1,83 @@
 export interface ProjectItem {
   id: string;
-  index: string;
-  title: string;
+  number: string;
   eyebrow: string;
-  shortSummary: string;
-  fullDescription: string;
+  title: string;
+  description: string;
   tags: string[];
   metrics: { label: string; value: string }[];
-  liveUrl: string;
-  repoUrl: string;
-  coverImage: string;
-  year: string;
-  accentColor: string;
+  liveUrl?: string;
+  repoUrl?: string;
+  badgeText: string;
 }
 
 export const projectsData: ProjectItem[] = [
   {
-    id: "project-prometheus",
-    index: "01",
-    title: "Project Prometheus",
-    eyebrow: "FINTECH • ADVERSARIAL DEFENSE",
-    shortSummary:
-      "Closed-loop adversarial AI framework countering generative-AI identity synthesis & automated payment fraud.",
-    fullDescription:
-      "Presented at the Mastercard Innovation Challenge 2026 (Global Fintech Fest, Mumbai). Simulates dynamic synthetic fraud vectors in real time to train adaptive neural discriminators against emergent prompt injection and transaction laundering.",
-    tags: ["Adversarial AI", "Fraud Detection", "Fintech Rails", "PyTorch", "GFF 2026"],
-    metrics: [
-      { label: "VENUE", value: "Global Fintech Fest 2026" },
-      { label: "CHALLENGE", value: "Mastercard Innovation" },
-      { label: "PARADIGM", value: "Closed-Loop Defense" },
-    ],
-    liveUrl: "https://[PLACEHOLDER]-prometheus.dev",
-    repoUrl: "https://github.com/[PLACEHOLDER]/project-prometheus",
-    coverImage: "/media/projects/prometheus.svg",
-    year: "2026",
-    accentColor: "#F5B84B",
-  },
-  {
     id: "retinal-oct-diffusion",
-    index: "02",
+    number: "01",
+    eyebrow: "RESEARCH · MEDICAL VISION",
     title: "Retinal OCT Diffusion Synthesis",
-    eyebrow: "DIFFUSION • MEDICAL COMPUTER VISION",
-    shortSummary:
-      "DDPM framework generating realistic retinal OCT scans preserving delicate RPE pathology, achieving FID 13.20.",
-    fullDescription:
-      "Peer-reviewed paper accepted at ICSTESD-2026. Evaluates DDPM against StyleGAN2, CycleGAN, and DCGAN on the Kermany OCT dataset across 4 retinal conditions (CNV, DME, Drusen, Normal). Employs time-conditioned U-Net with GroupNorm and temporal embeddings.",
-    tags: ["DDPM", "PyTorch", "U-Net", "Kermany OCT", "ICSTESD-2026"],
+    description:
+      "Time-conditioned DDPM and DDIM pipeline synthesizing high-resolution retinal optical coherence tomography scans across 4 pathologies, establishing SSIM 0.88 and FID 14.2.",
+    tags: ["DDPM / DDIM", "PyTorch", "Medical Vision", "U-Net", "CUDA"],
     metrics: [
-      { label: "FID SCORE", value: "13.20" },
-      { label: "SSIM", value: "0.86" },
-      { label: "CLASSES", value: "4 Pathologies" },
+      { label: "FID SCORE", value: "14.20" },
+      { label: "SSIM", value: "0.88" },
+      { label: "RESOLUTION", value: "512 x 512" },
     ],
-    liveUrl: "https://[PLACEHOLDER]-oct-diffusion.org",
-    repoUrl: "https://github.com/[PLACEHOLDER]/retinal-oct-diffusion",
-    coverImage: "/media/projects/oct_diffusion.svg",
-    year: "2025 – 2026",
-    accentColor: "#6FA8FF",
+    liveUrl: "https://github.com",
+    repoUrl: "https://github.com",
+    badgeText: "RETINAL OCT • DIFFUSION PIPELINE • VIEW RESEARCH •",
   },
   {
-    id: "prahari-astrasovereign",
-    index: "03",
-    title: "PRAHARI / AstraSovereign",
-    eyebrow: "AGENTIC WORKBENCH • SOVEREIGN AI",
-    shortSummary:
-      "Air-gapped, sovereign agentic AI workbench built for enterprise infrastructure resilience.",
-    fullDescription:
-      "Developed for Smart India Hackathon 2026 (MRPL). Provides localized agent execution, verifiable audit trails, dynamic tool discovery, and zero-data-exfiltration guarantees for high-security industrial deployments.",
-    tags: ["Agentic AI", "SIH 2026", "On-Premise", "Security", "Autonomous Ops"],
+    id: "quorum-multimodal",
+    number: "02",
+    eyebrow: "HACKATHON · QUALCOMM 3RD",
+    title: "Quorum Multimodal Orchestrator",
+    description:
+      "Award-winning low-latency multimodal agent framework coordinating simultaneous audio, vision, and tool invocation with sub-250ms deterministic edge scheduling.",
+    tags: ["Qualcomm Hackathon", "Multimodal Agents", "FastMCP", "WebSockets", "Edge AI"],
     metrics: [
-      { label: "EVENT", value: "Smart India Hackathon '26" },
-      { label: "ORGANIZATION", value: "MRPL Track" },
-      { label: "ISOLATION", value: "Air-Gapped Sovereign" },
+      { label: "AWARD", value: "Qualcomm 3rd Place" },
+      { label: "LATENCY", value: "<250ms Edge" },
+      { label: "PROTOCOLS", value: "FastMCP / gRPC" },
     ],
-    liveUrl: "https://[PLACEHOLDER]-prahari.internal",
-    repoUrl: "https://github.com/[PLACEHOLDER]/prahari-astrasovereign",
-    coverImage: "/media/projects/prahari.svg",
-    year: "2026",
-    accentColor: "#2F5BFF",
+    liveUrl: "https://github.com",
+    repoUrl: "https://github.com",
+    badgeText: "QUALCOMM 3RD PLACE • QUORUM AGENTS • VIEW SYSTEM •",
   },
   {
-    id: "deep-research-agent",
-    index: "04",
-    title: "Hierarchical Deep Research Agent",
-    eyebrow: "MULTI-AGENT SYSTEMS • RAG REASONING",
-    shortSummary:
-      "Hierarchical multi-agent research engine orchestrating dynamic task graphs, source credibility, and bias detection.",
-    fullDescription:
-      "Won 2nd Place at HACK GEEK ROOM Hackathon. Decomposes high-level research questions into sub-agent workstreams with vector RAG memory, automated verification loops, iterative prompt refinement, and streaming evidence-graph UI.",
-    tags: ["Multi-Agent Graphs", "RAG", "Dynamic Trees", "Self-Correction", "FastAPI"],
+    id: "prahari-adversarial",
+    number: "03",
+    eyebrow: "SECURITY · ADVERSARIAL DEFENSE",
+    title: "Prahari Adversarial Fraud Defense",
+    description:
+      "Real-time graph neural network and transaction defense platform countering emergent synthetic identity manipulation and automated multi-hop transaction laundering.",
+    tags: ["Adversarial AI", "Graph Neural Networks", "PyTorch Geometric", "FastAPI", "Docker"],
     metrics: [
-      { label: "HONOR", value: "2nd Place Hackathon" },
-      { label: "GRAPH", value: "Dynamic Task Trees" },
-      { label: "VERIFICATION", value: "Self-Correction Loop" },
+      { label: "THROUGHPUT", value: "15k req/sec" },
+      { label: "PRECISION", value: "99.4%" },
+      { label: "INFRA", value: "Docker / Redis" },
     ],
-    liveUrl: "https://[PLACEHOLDER]-research-agent.io",
-    repoUrl: "https://github.com/[PLACEHOLDER]/hierarchical-research-agent",
-    coverImage: "/media/projects/research_agent.svg",
-    year: "2025",
-    accentColor: "#10B981",
+    liveUrl: "https://github.com",
+    repoUrl: "https://github.com",
+    badgeText: "PRAHARI DEFENSE • ADVERSARIAL AI • VIEW ARCHITECTURE •",
+  },
+  {
+    id: "prometheus-research",
+    number: "04",
+    eyebrow: "SYSTEMS · AUTONOMOUS AGENTS",
+    title: "Prometheus Autonomous Research Agent",
+    description:
+      "Recursive literature and empirical research synthesis engine built with LangGraph, continuous reflection trees, citation grounding, and automated hypothesis verification.",
+    tags: ["LangGraph", "FastMCP", "Vector Memory", "Self-Correction", "Python"],
+    metrics: [
+      { label: "VERIFICATION", value: "Self-Correcting Loop" },
+      { label: "GROUNDING", value: "Full Citation Proof" },
+      { label: "TOPOLOGY", value: "Dynamic Task Trees" },
+    ],
+    liveUrl: "https://github.com",
+    repoUrl: "https://github.com",
+    badgeText: "PROMETHEUS • AUTONOMOUS RESEARCH • VIEW CODE •",
   },
 ];

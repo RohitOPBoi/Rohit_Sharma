@@ -1,49 +1,67 @@
 :root {
-  /* Colors */
-  --bg-dark: #070B16;
-  --bg-dark-card: #0D1424;
-  --bg-dark-surface: #121B30;
-  --bg-light: #F3EFE6;
-  --bg-light-surface: #E8E3D8;
-  
-  --text-dark: #070B16;
-  --text-dark-muted: #5A6275;
-  --text-light: #F3EFE6;
-  --text-light-muted: #94A3B8;
+  /* Colors from Design Analysis PDF */
+  --ink: #0A0A0A;
+  --ink-menu: #0C0C0C;
+  --ink-card: #111111;
+  --cream: #F1E8E0;
+  --gold: #C9B17C;
+  --gold-light: #DFD2AC;
+  --gold-mid: #C3B187;
+  --card-overlay: #2F2F2C;
+  --paper: #F2F0EC;
+  --mute: #9A9A9A;
+  --mute-2: #CCCCCC;
 
-  --accent-blue-primary: #2F5BFF;
-  --accent-blue-light: #6FA8FF;
-  --accent-blue-glow: rgba(47, 91, 255, 0.25);
-  --accent-amber: #F5B84B;
-  --accent-amber-glow: rgba(245, 184, 75, 0.3);
+  /* Backward-compatible aliases */
+  --bg-dark: #0A0A0A;
+  --bg-dark-card: #111111;
+  --bg-dark-surface: #0C0C0C;
+  --bg-light: #F1E8E0;
+  --bg-light-surface: #E8E0D5;
+  --text-dark: #0A0A0A;
+  --text-dark-muted: #5A5A55;
+  --text-light: #F1E8E0;
+  --text-light-muted: #9A9A9A;
+  --accent-blue-primary: #C9B17C;
+  --accent-blue-light: #DFD2AC;
+  --accent-amber: #C9B17C;
 
-  --border-dark: rgba(255, 255, 255, 0.08);
-  --border-dark-hover: rgba(111, 168, 255, 0.3);
-  --border-light: rgba(7, 11, 22, 0.12);
-  
   /* Fonts */
-  --font-display: 'Bebas Neue', 'Anton', -apple-system, sans-serif;
+  --font-display-condensed: 'Anton', 'Bebas Neue', -apple-system, sans-serif;
+  --font-display-wide: 'Archivo Black', 'Syne', -apple-system, sans-serif;
+  --font-display: 'Anton', 'Bebas Neue', -apple-system, sans-serif;
+  --font-headline: 'Outfit', -apple-system, sans-serif;
   --font-sans: 'Outfit', -apple-system, sans-serif;
+  --font-card-title: 'Manrope', 'Outfit', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --font-script: 'Caveat', cursive;
 
-  /* Motion tokens: 3 named eases and 3 durations */
+  /* Motion tokens: Sheet easing and reveal easing */
+  --ease-sheet: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-  --ease-in-out-circ: cubic-bezier(0.85, 0, 0.15, 1);
-  --duration-fast: 200ms;
-  --duration-normal: 450ms;
-  --duration-slow: 850ms;
+  --duration-fast: 180ms;
+  --duration-normal: 350ms;
+  --duration-slow: 700ms;
 }
 
-/* Base custom classes */
-.font-display {
-  font-family: var(--font-display);
+/* Custom Typography Utility Classes */
+.font-display-condensed {
+  font-family: var(--font-display-condensed);
   letter-spacing: 0.02em;
 }
 
-.font-sans-custom {
-  font-family: var(--font-sans);
+.font-display-wide {
+  font-family: var(--font-display-wide);
+  letter-spacing: -0.01em;
+}
+
+.font-headline {
+  font-family: var(--font-headline);
+}
+
+.font-card-title {
+  font-family: var(--font-card-title);
 }
 
 .font-mono-custom {
