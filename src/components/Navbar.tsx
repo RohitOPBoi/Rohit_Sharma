@@ -24,13 +24,17 @@ export const Navbar: React.FC = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        scrolled
-          ? 'bg-[#070B16]/85 backdrop-blur-md border-b border-white/10 py-3.5 shadow-lg'
-          : 'bg-transparent py-5'
+      className={`fixed top-0 left-0 right-0 z-40 px-4 sm:px-6 md:px-10 transition-all duration-300 pointer-events-none ${
+        scrolled ? 'pt-2.5 sm:pt-3' : 'pt-4 sm:pt-5'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+      <div
+        className={`max-w-7xl mx-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-full flex items-center justify-between pointer-events-auto transition-all duration-300 border ${
+          scrolled
+            ? 'bg-[#070B16]/90 backdrop-blur-xl border-white/15 shadow-2xl shadow-black/40'
+            : 'bg-[#070B16]/60 backdrop-blur-md border-white/10 shadow-lg shadow-black/20'
+        }`}
+      >
         {/* Left: Script-style signature logo */}
         <a
           href="#hero"
@@ -55,11 +59,11 @@ export const Navbar: React.FC = () => {
           ))}
         </nav>
 
-        {/* Right: Location & Availability Indicator */}
+        {/* Right: Availability Indicator & Contact Button */}
         <div className="hidden lg:flex items-center gap-4">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[11px] font-mono text-[#94A3B8]">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[#F3EFE6]">BASED IN {profileData.city}</span>
+            <span className="text-[#F3EFE6]">AVAILABLE FOR ROLES</span>
           </div>
 
           <a
@@ -96,7 +100,7 @@ export const Navbar: React.FC = () => {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#070B16]/98 backdrop-blur-xl border-b border-white/10 px-6 py-6 transition-all">
+        <div className="md:hidden mt-3 max-w-7xl mx-auto bg-[#070B16]/98 backdrop-blur-xl border border-white/10 rounded-2xl px-6 py-6 shadow-2xl pointer-events-auto transition-all">
           <nav className="flex flex-col space-y-4 text-sm font-mono tracking-wider uppercase">
             {navLinks.map((link) => (
               <a
@@ -109,8 +113,9 @@ export const Navbar: React.FC = () => {
               </a>
             ))}
             <div className="pt-2 flex flex-col gap-3">
-              <span className="text-xs text-[#94A3B8] font-mono">
-                BASED IN {profileData.city}, {profileData.country}
+              <span className="text-xs text-[#94A3B8] font-mono flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                AVAILABLE FOR RESEARCH & ENG ROLES
               </span>
               <a
                 href="#contact"

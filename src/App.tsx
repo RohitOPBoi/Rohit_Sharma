@@ -59,7 +59,7 @@ export const App: React.FC = () => {
     <div className="relative min-h-screen bg-[#070B16] text-[#F3EFE6]">
       {/* 1. Preloader */}
       {!preloaderDone && (
-        <Preloader onComplete={() => setPreloaderDone(true)} totalFrames={72} />
+        <Preloader onComplete={() => setPreloaderDone(true)} totalFrames={144} />
       )}
 
       {/* 2. Navigation Bar */}

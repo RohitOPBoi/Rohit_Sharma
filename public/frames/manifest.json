@@ -1,11 +1,13 @@
 {
-  "totalFrames": 72,
-  "width": 1280,
-  "height": 720,
-  "sourceFps": 24.0,
-  "neutralFrameIndex": 71,
+  "totalFrames": 144,
+  "width": 1920,
+  "height": 1080,
+  "fps": 24.0,
   "leftmostFrameIndex": 0,
-  "rightmostFrameIndex": 71,
-  "hasRightClip": false,
+  "neutralFrameIndex": 60,
+  "rightmostFrameIndex": 143,
+  "leftmostTimestamp": 0.0,
+  "neutralTimestamp": 2.5,
+  "rightmostTimestamp": 5.958,
   "namingPattern": "/frames/frame_%03d.webp"
 }
