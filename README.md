@@ -58,5 +58,5 @@ All site content is decoupled in `src/data/` for easy updates:
 │   ├── styles/         # Design tokens and Tailwind CSS
 │   └── App.tsx         # Lenis smooth-scroll and GSAP orchestration
 ├── index.html
-└── package.json
+/└── package.json
 ```

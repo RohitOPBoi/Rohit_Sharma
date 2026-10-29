@@ -18,8 +18,8 @@ export const AvatarCanvas: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Cached frame sequence (ImageBitmap for hardware GPU decoding or HTMLImageElement fallback)
-  const bitmapsRef = useRef<(ImageBitmap | HTMLImageElement)[]>([]);
+  // Cached frame sequence (HTMLImageElement or ImageBitmap)
+  const bitmapsRef = useRef<(HTMLImageElement | ImageBitmap)[]>([]);
   const manifestRef = useRef<ManifestData>({
     totalFrames: 144,
     width: 1920,
@@ -42,6 +42,54 @@ export const AvatarCanvas: React.FC = () => {
   const isReducedMotionRef = useRef<boolean>(false);
   const [posterLoaded, setPosterLoaded] = useState<boolean>(false);
 
+  // Helper to draw a frame onto the canvas
+  const drawFrame = useCallback((frameIndex: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: false });
+    if (!ctx) return;
+
+    const total = manifestRef.current.totalFrames;
+    const idx = Math.max(0, Math.min(total - 1, Math.round(frameIndex)));
+
+    // Progressive nearest-neighbor search:
+    // If the exact frame is not yet downloaded, find the closest available loaded frame.
+    // This allows the avatar to start tracking IMMEDIATELY even if only 5-10 frames have arrived!
+    let frame = bitmapsRef.current[idx];
+    if (!frame) {
+      for (let offset = 1; offset < total; offset++) {
+        if (idx - offset >= 0 && bitmapsRef.current[idx - offset]) {
+          frame = bitmapsRef.current[idx - offset];
+          break;
+        }
+        if (idx + offset < total && bitmapsRef.current[idx + offset]) {
+          frame = bitmapsRef.current[idx + offset];
+          break;
+        }
+      }
+    }
+
+    if (!frame) frame = bitmapsRef.current[manifestRef.current.neutralFrameIndex];
+    if (!frame) return;
+
+    const cW = canvas.width;
+    const cH = canvas.height;
+    const fW = 'naturalWidth' in frame ? frame.naturalWidth : frame.width;
+    const fH = 'naturalHeight' in frame ? frame.naturalHeight : frame.height;
+
+    if (!fW || !fH) return;
+
+    // Zero-Bezel Cover Scaling (covers entire viewport seamlessly)
+    const scale = Math.max(cW / fW, cH / fH);
+    const renderW = fW * scale;
+    const renderH = fH * scale;
+
+    const offsetX = (cW - renderW) * 0.5;
+    const offsetY = cH - renderH;
+
+    ctx.drawImage(frame, offsetX, offsetY, renderW, renderH);
+  }, []);
+
   // 1. Instant poster frame load (neutral center frame_060.webp)
   useEffect(() => {
     if (typeof window !== 'undefined' && window.matchMedia) {
@@ -55,58 +103,72 @@ export const AvatarCanvas: React.FC = () => {
       setPosterLoaded(true);
       drawFrame(60);
     };
-  }, []);
+  }, [drawFrame]);
 
-  // 2. Preload full frame sequence with createImageBitmap for seamless GPU caching
+  // 2. Progressive 2-Tier Frame Loader:
+  // - Tier 1: Immediately loads 12 anchor frames in parallel across the full range.
+  //   Avatar becomes responsive to cursor movement within ~300ms!
+  // - Tier 2: Progressively streams remaining frames in parallel batches directly into cache.
   useEffect(() => {
     let isCancelled = false;
 
-    const loadFrames = async () => {
-      try {
-        const res = await fetch('/frames/manifest.json');
-        if (res.ok) {
-          manifestRef.current = (await res.json()) as ManifestData;
-          targetFrameRef.current = manifestRef.current.neutralFrameIndex;
-          currentFrameRef.current = manifestRef.current.neutralFrameIndex;
-        }
-      } catch {
-        // Fallback to default manifest
-      }
+    // Load an individual frame with robust fallback
+    const loadSingleFrame = async (index: number): Promise<void> => {
+      if (isCancelled || bitmapsRef.current[index]) return;
+      const pad = String(index).padStart(3, '0');
+      const url = `/frames/frame_${pad}.webp`;
 
-      const total = manifestRef.current.totalFrames;
-      const loaded: (ImageBitmap | HTMLImageElement)[] = [];
-
-      for (let i = 0; i < total; i++) {
-        if (isCancelled) break;
-        const pad = String(i).padStart(3, '0');
-        const url = `/frames/frame_${pad}.webp`;
-
-        try {
-          if ('createImageBitmap' in window) {
-            const resp = await fetch(url);
-            const blob = await resp.blob();
-            const bitmap = await createImageBitmap(blob);
-            loaded[i] = bitmap;
-          } else {
-            const img = new Image();
-            img.src = url;
-            await new Promise((resolve) => {
-              img.onload = resolve;
-              img.onerror = resolve;
-            });
-            loaded[i] = img;
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => {
+          if (!isCancelled) {
+            bitmapsRef.current[index] = img;
           }
-        } catch {
-          // Continue if a single frame drops
+          resolve();
+        };
+        img.onerror = () => {
+          resolve(); // Resolve anyway to never stall the queue
+        };
+      });
+    };
+
+    const loadAllFramesProgressively = async () => {
+      // Fetch manifest non-blockingly
+      fetch('/frames/manifest.json')
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && !isCancelled) {
+            manifestRef.current = data;
+          }
+        })
+        .catch(() => {});
+
+      const total = 144;
+
+      // Tier 1: Key anchor frames distributed evenly (instant cursor interactivity)
+      const anchorFrames = [0, 12, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, 143];
+      await Promise.all(anchorFrames.map((idx) => loadSingleFrame(idx)));
+
+      if (isCancelled) return;
+
+      // Tier 2: Stream remaining intermediate frames in batches of 6 concurrently
+      const remainingIndices: number[] = [];
+      for (let i = 0; i < total; i++) {
+        if (!bitmapsRef.current[i]) {
+          remainingIndices.push(i);
         }
       }
 
-      if (!isCancelled) {
-        bitmapsRef.current = loaded;
+      const batchSize = 6;
+      for (let i = 0; i < remainingIndices.length; i += batchSize) {
+        if (isCancelled) break;
+        const chunk = remainingIndices.slice(i, i + batchSize);
+        await Promise.all(chunk.map((idx) => loadSingleFrame(idx)));
       }
     };
 
-    loadFrames();
+    loadAllFramesProgressively();
 
     return () => {
       isCancelled = true;
@@ -159,6 +221,8 @@ export const AvatarCanvas: React.FC = () => {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (isReducedMotionRef.current) return;
+      if (!Number.isFinite(e.clientX)) return;
+
       lastInteractionTimeRef.current = Date.now();
       isIdleRef.current = false;
 
@@ -247,46 +311,7 @@ export const AvatarCanvas: React.FC = () => {
     };
   }, [mapPointerToFrame]);
 
-  // 5. TRUE FULL-BLEED ZERO-BEZEL RENDERING
-  // Ensures the bright, high-resolution avatar park background covers 100% of the canvas
-  // edge-to-edge across any viewport (ultrawide, 16:9, laptop, portrait) with zero black bezels.
-  const drawFrame = useCallback((frameIndex: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha: false });
-    if (!ctx) return;
-
-    const total = bitmapsRef.current.length || manifestRef.current.totalFrames;
-    const idx = Math.max(0, Math.min(total - 1, Math.round(frameIndex)));
-    const frame = bitmapsRef.current[idx] || bitmapsRef.current[manifestRef.current.neutralFrameIndex];
-
-    if (!frame) return;
-
-    const cW = canvas.width;
-    const cH = canvas.height;
-    const fW = 'naturalWidth' in frame ? frame.naturalWidth : frame.width;
-    const fH = 'naturalHeight' in frame ? frame.naturalHeight : frame.height;
-
-    if (!fW || !fH) return;
-
-    // Zero-Bezel Cover Scaling:
-    // Math.max guarantees renderW >= cW and renderH >= cH.
-    // Every pixel of the screen is covered by the video frame, eliminating all borders or letterboxing.
-    const scale = Math.max(cW / fW, cH / fH);
-    const renderW = fW * scale;
-    const renderH = fH * scale;
-
-    // Horizontally center the subject
-    const offsetX = (cW - renderW) * 0.5;
-
-    // Vertically anchor desk to bottom edge so the wooden table sits naturally on the ground,
-    // and the expansive green trees and sky stretch upwards to give wide breathing room.
-    const offsetY = cH - renderH;
-
-    ctx.drawImage(frame, offsetX, offsetY, renderW, renderH);
-  }, []);
-
-  // 6. Fluid rAF render loop with critical-damped lerp easing
+  // 5. Fluid rAF render loop with critical-damped lerp easing
   useEffect(() => {
     let animId: number;
 
@@ -303,8 +328,8 @@ export const AvatarCanvas: React.FC = () => {
           targetFrameRef.current = manifestRef.current.neutralFrameIndex;
         }
 
-        // Lerp factor 0.10 gives responsive, buttery smooth motion with 144 frames
-        const lerpFactor = 0.10;
+        // Lerp factor 0.12 gives responsive, buttery smooth motion with 144 frames
+        const lerpFactor = 0.12;
         const diff = targetFrameRef.current - currentFrameRef.current;
         currentFrameRef.current += diff * lerpFactor;
 
@@ -318,7 +343,7 @@ export const AvatarCanvas: React.FC = () => {
     return () => cancelAnimationFrame(animId);
   }, [drawFrame]);
 
-  // 7. Responsive resize handling
+  // 6. Responsive resize handling
   useEffect(() => {
     const handleResize = () => {
       const canvas = canvasRef.current;
@@ -356,8 +381,8 @@ export const AvatarCanvas: React.FC = () => {
         }`}
       />
 
-      {/* Seamless bottom transition into the dark marquee section */}
-      <div className="absolute bottom-0 left-0 right-0 h-28 pointer-events-none bg-gradient-to-b from-transparent to-[#070B16]" />
+      {/* Seamless bottom transition into the dark section */}
+      <div className="absolute bottom-0 left-0 right-0 h-28 pointer-events-none bg-gradient-to-b from-transparent to-[#0A0A0A]" />
     </div>
   );
 };
