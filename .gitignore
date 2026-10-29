@@ -32,6 +32,9 @@ lerna-debug.log*
 .DS_Store
 Thumbs.db
 
-# Raw videos & temp
+# Raw assets & scratch
 raw_assets/
+reference/
+scratch/
+Recording*.mp4
 temp_*
